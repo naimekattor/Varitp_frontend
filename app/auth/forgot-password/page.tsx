@@ -1,20 +1,15 @@
-import AuthLayout from "@/components/auth/AuthLayout";
-import ForgotPasswordForm from "@/components/auth/ForgotPasswordForm";
+"use client";
+
+import AuthPage from "@/components/auth/AuthPage";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
+  
   return (
-    <AuthLayout image="/images/forgot-password.jpg">
-      <div className="space-y-3 mb-8">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          Forgot Password?
-        </h1>
-
-        <p className="text-sm text-gray-500">
-          Enter your email to receive reset instructions.
-        </p>
-      </div>
-
-      <ForgotPasswordForm />
-    </AuthLayout>
+    <AuthPage 
+      initialView="forgot-password" 
+      onBack={() => router.push("/")} 
+    />
   );
 }

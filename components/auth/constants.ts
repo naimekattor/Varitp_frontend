@@ -4,13 +4,14 @@ export const createEmptyOtp = () =>
   Array.from({ length: OTP_LENGTH }, () => "");
 
 export const createEmptySignInForm = () => ({
-  username: "",
+  email: "",
   password: "",
 });
 
 export const createEmptySignUpForm = () => ({
   firstName: "",
   lastName: "",
+  email: "",
   address: "",
   phone: "",
   password: "",

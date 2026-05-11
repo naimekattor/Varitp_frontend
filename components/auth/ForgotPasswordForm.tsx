@@ -1,58 +1,50 @@
-"use client";
-
-import Link from "next/link";
 import { Mail } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
-export default function ForgotPasswordForm() {
-  const router = useRouter();
+interface Props {
+  onSignIn: () => void;
+  onSubmit: (e: React.FormEvent) => void;
+}
 
-  const [email, setEmail] = useState("");
-
-  const handleSubmit = (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
-
-    router.push("/auth/otp");
-  };
-
+export default function ForgotPasswordForm({ onSignIn, onSubmit }: Props) {
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-5"
-    >
-      <div className="relative">
-        <Mail
-          className="absolute left-3 top-3.5 text-[#E86F24]"
-          size={18}
-        />
+    <div className="w-full animate-in fade-in slide-in-from-top-2 duration-500">
+      <form className="w-full space-y-5" onSubmit={onSubmit}>
+        <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2">
+          <label className="text-[13px] font-semibold text-gray-700 ml-1">
+            Email Address
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#E86F24]">
+              <Mail size={18} strokeWidth={2} />
+            </div>
+            <input
+              type="email"
+              placeholder="example@gmail.com"
+              className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-[#E86F24] bg-white ring-4 ring-orange-500/5 outline-none transition-all text-sm placeholder:text-gray-400 shadow-[0_0_15px_rgba(232,111,36,0.05)]"
+            />
+          </div>
+        </div>
 
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
-          className="w-full border rounded-xl p-3 pl-10"
-        />
-      </div>
+        <div className="pt-4 transition-all">
+          <button
+            type="submit"
+            className="w-full bg-[#E86F24] hover:bg-[#d4621c] text-white py-4 rounded-xl font-bold transition-all text-[15px] shadow-[0_10px_25px_-5px_rgba(232,111,36,0.3)] hover:shadow-[0_15px_30px_-5px_rgba(232,111,36,0.4)] active:scale-[0.98]"
+          >
+            Send Reset Link
+          </button>
+        </div>
+      </form>
 
-      <button className="w-full bg-[#E86F24] text-white py-3 rounded-xl">
-        Send Reset Link
-      </button>
-
-      <p className="text-center text-sm text-gray-500">
-        Back to{" "}
-        <Link
-          href="/auth/login"
-          className="text-[#E86F24] font-medium"
+      <p className="mt-10 text-[14px] text-gray-400 transition-all text-center pb-2">
+        Remember your password?{" "}
+        <button
+          type="button"
+          onClick={onSignIn}
+          className="text-[#E86F24] font-bold hover:underline ml-1"
         >
           Sign In
-        </Link>
+        </button>
       </p>
-    </form>
+    </div>
   );
 }
