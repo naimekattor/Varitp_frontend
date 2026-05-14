@@ -21,6 +21,7 @@ import ForgotPasswordForm from "./ForgotPasswordForm";
 import OtpVerificationForm from "./OtpVerificationForm";
 import ResetPasswordForm from "./ResetPasswordForm";
 import SuccessModal from "./SuccessModal";
+import Link from "next/link";
 
 export default function AuthPage({
   onBack,
@@ -40,6 +41,8 @@ export default function AuthPage({
   const [resetPasswordForm, setResetPasswordForm] = useState(
     createEmptyResetPasswordForm(),
   );
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+  const [resetToken, setResetToken] = useState<string | null>(null);
 
   // UI States
   const [showPassword, setShowPassword] = useState(false);
@@ -142,6 +145,26 @@ export default function AuthPage({
     }
   };
 
+  const handleForgotPasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await api.post("/auth/api/v1/get-otp/", {
+        email: forgotPasswordEmail,
+        task: "password_reset",
+      });
+
+      if (response.data.status) {
+        setViewState("otp");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to send reset code.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -155,8 +178,23 @@ export default function AuthPage({
       });
 
       if (response.data.status) {
-        setViewState("signin");
-        setError("OTP Verified! Please sign in with your new account.");
+        // Capture token if provided (e.g. for reset password flow)
+        if (response.data.access || response.data.token) {
+          setResetToken(response.data.access || response.data.token);
+        }
+
+        if (viewState === "otp" && (forgotPasswordEmail || signInForm.email)) {
+          // If we were in forgot password flow (detected by having an email in that state or coming from signin's forgot link)
+          // Actually, let's just check the viewState transition logic.
+          // If we are at 'otp' and we came from 'forgot-password', we should go to 'reset-password'.
+          // Let's use a more robust way: if forgotPasswordEmail is set, we are in reset flow.
+          if (forgotPasswordEmail) {
+            setViewState("reset-password");
+          } else {
+            setViewState("signin");
+            setError("OTP Verified! Please sign in with your new account.");
+          }
+        }
       }
     } catch (err: any) {
       setError(err.response?.data?.message || "OTP verification failed.");
@@ -169,7 +207,7 @@ export default function AuthPage({
     setIsLoading(true);
     setError(null);
     try {
-      const email = viewState === "otp" ? signUpForm.email : signInForm.email;
+      const email = forgotPasswordEmail || (viewState === "otp" ? signUpForm.email : signInForm.email);
       await api.post("/auth/api/v1/get-otp/", {
         email,
         task: viewState === "otp" ? "registration" : "password_reset",
@@ -182,9 +220,31 @@ export default function AuthPage({
     }
   };
 
-  const handleResetSubmit = (e: React.FormEvent) => {
+  const handleResetSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setShowSuccess(true);
+    if (resetPasswordForm.password !== resetPasswordForm.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await api.post("/auth/api/v1/reset-password/", {
+        email: forgotPasswordEmail,
+        new_password: resetPasswordForm.password,
+        confirm_password: resetPasswordForm.confirmPassword,
+      }, {
+        headers: resetToken ? { Authorization: `Bearer ${resetToken}` } : {}
+      });
+
+      if (response.data.status) {
+        setShowSuccess(true);
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Password reset failed.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const updateSignInField = (field: string, value: string) => {
@@ -209,15 +269,27 @@ export default function AuthPage({
   return (
     <AuthLayout onBack={onBack}>
       {/* Form Panel */}
-      <div className="w-full md:w-1/2 bg-white rounded-[2.5rem] p-8 md:p-12 lg:p-16 flex flex-col items-center justify-start md:justify-center relative overflow-y-auto max-h-screen shadow-[0_8px_40px_rgb(0,0,0,0.04)] border border-white scrollbar-hide">
+      <div
+        className="w-full md:w-1/2
+    min-h-[780px]
+    lg:min-h-[820px]
+    bg-linear-to-b from-[#fdece0] via-white to-white
+    rounded-[2.5rem]
+    p-6 sm:p-8 md:p-10 lg:p-14
+    flex flex-col items-center justify-center
+    relative
+    shadow-[0_8px_40px_rgb(0,0,0,0.04)]
+    border border-white "
+      >
         {/* Subtle decorative elements for the form panel */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-orange-50/50 rounded-full blur-3xl -z-10"></div>
         <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-red-50/50 rounded-full blur-3xl -z-10"></div>
 
-        <div className="w-full max-w-[400px] flex flex-col items-center mx-auto transition-all duration-300 relative z-10 py-8">
+        <div className="w-full max-w-[500px] flex flex-col justify-center flex-1 mx-auto relative z-10">
           {/* Logo */}
-          <div className="mb-8 flex flex-col items-center">
-            <div className="relative w-24 h-24 mb-2">
+          <Link href={"/"}>
+          <div className=" flex flex-col items-center">
+            <div className="relative w-24 h-24 mb-2 bg-white p-1 rounded-2xl">
               <Image
                 src="/images/Varivo_LOGO_RGB_boja.png"
                 alt="Varivo Logo"
@@ -226,24 +298,25 @@ export default function AuthPage({
               />
             </div>
           </div>
+          </Link>
 
           {/* Heading */}
           <div className="text-center mb-6">
             <h1 className="text-3xl font-serif font-bold text-gray-900 mb-3 tracking-tight">
               {viewState === "signin" && "Welcome Back"}
               {viewState === "signup" && "Create Account"}
-              {viewState === "forgot-password" && "Forgot Password"}
-              {viewState === "otp" && "Verify Code"}
-              {viewState === "reset-password" && "Set New Password"}
+              {viewState === "forgot-password" && "Forgot Password?"}
+              {viewState === "otp" && "Please Check Your Email"}
+              {viewState === "reset-password" && "Enter New password"}
             </h1>
             <p className="text-gray-500 text-sm font-medium">
               {viewState === "signin" && "Please enter your details to sign in"}
               {viewState === "signup" && "Join our community of food lovers"}
               {viewState === "forgot-password" &&
-                "Enter your email to receive a reset code"}
-              {viewState === "otp" && "Enter the 5-digit code sent to your email"}
+                "Just enter your email to receive password reset instructions"}
+              {viewState === "otp" && ""}
               {viewState === "reset-password" &&
-                "Please choose a new strong password"}
+                "Your OTP has been verified, please enter new password."}
             </p>
           </div>
 
@@ -286,11 +359,12 @@ export default function AuthPage({
 
           {viewState === "forgot-password" && (
             <ForgotPasswordForm
+              email={forgotPasswordEmail}
+              setEmail={setForgotPasswordEmail}
               onSignIn={() => switchView("signin")}
-              onSubmit={(e) => {
-                e.preventDefault();
-                switchView("otp");
-              }}
+              onSignUp={() => switchView("signup")}
+              onSubmit={handleForgotPasswordSubmit}
+              isLoading={isLoading}
             />
           )}
 
@@ -319,7 +393,9 @@ export default function AuthPage({
                 setShowConfirmPassword(!showConfirmPassword)
               }
               onSignIn={() => switchView("signin")}
+              onSignUp={() => switchView("signup")}
               onSubmit={handleResetSubmit}
+              isLoading={isLoading}
             />
           )}
         </div>

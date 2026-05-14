@@ -1,4 +1,5 @@
 import OtpInput from "./OtpInput";
+import { Loader2 } from "lucide-react";
 
 interface Props {
   otpDigits: string[];
@@ -28,7 +29,7 @@ export default function OtpVerificationForm({
 }: Props) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-top-2 w-full pt-2 duration-500">
-      <div className="bg-[#FFF2E8] border-none rounded-2xl p-5 flex gap-4 items-center justify-center text-left">
+      <div className="bg-[#FFF2E8] border-none rounded-2xl p-5 flex gap-4 items-center justify-center text-left shadow-sm">
         <div className="w-5 h-5 rounded-full bg-[#E86F24] text-white flex items-center justify-center shrink-0 text-[11px] font-bold shadow-sm">
           !
         </div>
@@ -56,11 +57,11 @@ export default function OtpVerificationForm({
           >
             {isLoading ? (
               <>
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <Loader2 size={18} className="animate-spin" />
                 Verifying...
               </>
             ) : (
-              "Verify Code"
+              "Verify"
             )}
           </button>
 
@@ -69,15 +70,15 @@ export default function OtpVerificationForm({
               type="button"
               onClick={onResendOtp}
               disabled={isLoading}
-              className="text-[13px] text-gray-500 hover:text-[#E86F24] font-semibold transition-colors disabled:opacity-50"
+              className="text-[13px] text-gray-400 hover:text-[#E86F24] font-semibold transition-colors disabled:opacity-50"
             >
-              Didn't receive the code? <span className="text-[#E86F24] ml-1">Resend Code</span>
+              Didn't receive the code? <span className="text-[#E86F24] ml-1 hover:underline">Resend Code</span>
             </button>
           </div>
         </div>
       </form>
 
-      <p className="mt-10 text-[14px] text-gray-400 transition-all text-center pb-2">
+      <p className="mt-14 text-[14px] text-gray-400 transition-all text-center pb-2">
         Don't have an account?{" "}
         <button
           type="button"
@@ -89,4 +90,4 @@ export default function OtpVerificationForm({
       </p>
     </div>
   );
-}
+}

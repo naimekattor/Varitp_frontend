@@ -4,7 +4,7 @@ import { ShoppingCart as CartIcon, Trash2, ArrowLeft } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function ShoppingCartPage() {
   const items = useCartStore((state) => state.items);
@@ -14,15 +14,48 @@ export default function ShoppingCartPage() {
   const fetchCart = useCartStore((state) => state.fetchCart);
   const isLoading = useCartStore((state) => state.isLoading);
   const error = useCartStore((state) => state.error);
+  const charges = useCartStore((state) => state.charges);
+  const coupon = useCartStore((state) => state.coupon);
+  const finalAmount = useCartStore((state) => state.finalAmount);
+  const applyCoupon = useCartStore((state) => state.applyCoupon);
+  const removeCoupon = useCartStore((state) => state.removeCoupon);
   
   const router = useRouter();
+  const [couponInput, setCouponInput] = useState('');
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
 
-  const deliveryFee = subtotal > 0 ? 4.99 : 0;
-  const tax = subtotal * 0.1; // 10% tax
+  const handleApplyCoupon = async () => {
+    if (!couponInput.trim()) {
+      return;
+    }
+    setIsApplyingCoupon(true);
+    try {
+      await applyCoupon(couponInput);
+      setCouponInput('');
+    } catch (err) {
+      console.error("Coupon error:", err);
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = async () => {
+    setIsApplyingCoupon(true);
+    try {
+      await removeCoupon();
+    } catch (err) {
+      console.error("Remove coupon error:", err);
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const deliveryFee = 0; // subtotal > 0 ? 4.99 : 0;
+  const tax = 0; // subtotal * 0.1; // 10% tax
   const total = subtotal + deliveryFee + tax;
 
   if (items.length === 0) {
@@ -70,10 +103,14 @@ export default function ShoppingCartPage() {
 
                 <div className="w-full sm:w-[150px] h-[150px] shrink-0 rounded-2xl overflow-hidden relative shadow-sm border border-gray-50">
                   <Image
-                    src={item.image}
+                    src={item.image || "/images/GOJ_3134.jpg"}
                     alt={item.title}
                     fill
                     className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = "/images/GOJ_3134.jpg"; // Reliable fallback
+                    }}
                   />
                 </div>
 
@@ -121,20 +158,66 @@ export default function ShoppingCartPage() {
                 <span className="text-gray-500 font-medium">Subtotal</span>
                 <span className="text-gray-900 font-bold">${subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-500 font-medium">Delivery Fee</span>
-                <span className="text-gray-900 font-bold">${deliveryFee.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-500 font-medium">Estimated Tax (10%)</span>
-                <span className="text-gray-900 font-bold">${tax.toFixed(2)}</span>
-              </div>
+              
+              {/* Display Charges */}
+              {charges.map((charge) => (
+                <div key={charge.name} className="flex justify-between items-center text-sm">
+                  <span className="text-gray-500 font-medium capitalize">
+                    {charge.name === 'delivery_fee' ? 'Delivery Fee' : charge.name}
+                  </span>
+                  <span className="text-gray-900 font-bold">${parseFloat(charge.value).toFixed(2)}</span>
+                </div>
+              ))}
+              
+              {/* Display Coupon Discount */}
+              {coupon && (
+                <div className="flex justify-between items-center text-sm text-green-600">
+                  <span className="font-medium">Coupon ({coupon.code})</span>
+                  <span className="font-bold">-${parseFloat(coupon.discount_value).toFixed(2)}</span>
+                </div>
+              )}
             </div>
+
+            {/* Promo Code Input */}
+            {!coupon && (
+              <div className="mb-8 flex gap-2">
+                <input 
+                  type="text" 
+                  placeholder="Promo code" 
+                  value={couponInput}
+                  onChange={(e) => setCouponInput(e.target.value)}
+                  className="flex-1 px-4 py-3 rounded-lg border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm"
+                  disabled={isApplyingCoupon}
+                />
+                <button 
+                  type="button"
+                  onClick={handleApplyCoupon}
+                  disabled={isApplyingCoupon}
+                  className="px-6 py-3 bg-black hover:bg-gray-800 text-white rounded-lg font-bold transition-all text-sm disabled:opacity-50"
+                >
+                  {isApplyingCoupon ? 'Applying...' : 'Apply'}
+                </button>
+              </div>
+            )}
+
+            {coupon && (
+              <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
+                <span className="text-sm font-medium text-green-700">Coupon <strong>{coupon.code}</strong> applied!</span>
+                <button 
+                  type="button"
+                  onClick={handleRemoveCoupon}
+                  disabled={isApplyingCoupon}
+                  className="text-xs text-green-600 hover:text-green-700 font-bold"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
 
             <div className="flex justify-between items-end mb-12">
               <span className="text-lg font-bold text-gray-900">Total Amount</span>
               <div className="text-right">
-                <span className="text-4xl font-bold text-[#E86F24] tracking-tight block">${total.toFixed(2)}</span>
+                <span className="text-4xl font-bold text-[#E86F24] tracking-tight block">${finalAmount.toFixed(2)}</span>
               </div>
             </div>
 
@@ -157,4 +240,4 @@ export default function ShoppingCartPage() {
       </main>
     </div>
   );
-}
+}

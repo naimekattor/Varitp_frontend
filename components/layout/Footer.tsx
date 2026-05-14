@@ -1,5 +1,6 @@
 import { Send } from 'lucide-react';
 import Image from 'next/image'; 
+import Link from 'next/link';
 import { FaFacebook, FaLinkedin, FaTwitter } from 'react-icons/fa';
 
 export default function Footer() {
@@ -34,28 +35,25 @@ export default function Footer() {
 
         {/* Links Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-y-12 gap-x-6 mb-16 pt-6 border-t border-gray-200">
-          <div className="space-y-6">
+          {/* <div className="space-y-6">
             <h4 className="text-[16px] font-semibold text-gray-900">Booking Plan</h4>
             <div className="flex flex-col gap-4 text-[14px] text-gray-400 font-medium">
               <a href="#" className="hover:text-[#E86F24] transition-colors">Healthy food</a>
               <a href="#" className="hover:text-[#E86F24] transition-colors">Group Trip</a>
               <a href="#" className="hover:text-[#E86F24] transition-colors">Vlog</a>
             </div>
-          </div>
+          </div> */}
           <div className="space-y-6">
             <h4 className="text-[16px] font-semibold text-gray-900">Support</h4>
             <div className="flex flex-col gap-4 text-[14px] text-gray-400 font-medium">
-              <a href="#" className="hover:text-[#E86F24] transition-colors">FAQ&apos;s</a>
-              <a href="#" className="hover:text-[#E86F24] transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-[#E86F24] transition-colors">Terms & Conditions</a>
+              <Link href="/faq" className="hover:text-[#E86F24] transition-colors">FAQ&apos;s</Link>
+              <Link href="/privacy" className="hover:text-[#E86F24] transition-colors">Privacy Policy</Link>
             </div>
           </div>
           <div className="space-y-6">
             <h4 className="text-[16px] font-semibold text-gray-900">Company</h4>
             <div className="flex flex-col gap-4 text-[14px] text-gray-400 font-medium">
-              <a href="#" className="hover:text-[#E86F24] transition-colors">About Us</a>
-              <a href="#" className="hover:text-[#E86F24] transition-colors">Blog</a>
-              <a href="#" className="hover:text-[#E86F24] transition-colors">Services</a>
+              <Link href="/about" className="hover:text-[#E86F24] transition-colors">About Us</Link>
             </div>
           </div>
           
@@ -71,7 +69,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-200 pt-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <p className="text-[13px] text-gray-500 font-medium">&copy; Wdktoolkit 2024 All right reserved.</p>
+          <p className="text-[13px] text-gray-500 font-medium">&copy; Varivo Bristo 2026 All right reserved.</p>
           <div className="flex items-center gap-6 text-[#E86F24]">
             <a href="#" className="hover:scale-110 transition-transform"><FaFacebook size={18} fill="currentColor" strokeWidth={0}/></a>
             <a href="#" className="hover:scale-110 transition-transform"><FaTwitter size={18} fill="currentColor" strokeWidth={0}/></a>

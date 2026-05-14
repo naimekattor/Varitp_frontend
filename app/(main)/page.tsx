@@ -10,8 +10,10 @@ export default function HomePage() {
   return (
     <LandingPage 
       onNavigate={(page) => {
-        if (page === "signin" || page === "signup") {
-          router.push("/auth"); // You can pass state here if needed, but simple redirect for now
+        if (page === "login") {
+          router.push("/auth/login");
+        } else if (page === "register") {
+          router.push("/auth/register");
         } else if (page === "cart") {
           router.push("/cart");
         } else {

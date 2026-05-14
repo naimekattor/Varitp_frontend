@@ -38,21 +38,25 @@ export default function Header() {
     { href: '/review', label: 'Review' },
     { href: '/contact', label: 'Contact' },
     ...(session 
-      ? [{ href: '#', label: 'Logout', onClick: () => signOut({ callbackUrl: '/' }) }]
-      : [{ href: '/signup', label: 'Signup', activePaths: ['/auth', '/auth/register', '/auth/login'] }]
+      ? [
+          { href: '/orders', label: 'My Orders' },
+          { href: '/', label: 'Logout', onClick: () => signOut({ callbackUrl: '/' }) }
+        ]
+      : [{ href: '/auth/register', label: 'Signup', activePaths: ['/auth', '/auth/register', '/auth/login'] }]
     ),
+    
   ];
 
   return (
     <>
-      <header className="w-full bg-white relative z-[100] shadow-[0_2px_15px_rgb(0,0,0,0.03)] border-b border-gray-100">
+      <header className="w-full bg-white relative z-[100] shadow-[0_2px_15px_rgb(0,0,0,0.03)] border-b border-gray-100 py-4">
         <div className="max-w-[1600px] mx-auto px-6 py-[50px] lg:py-[40px] flex items-center justify-end relative">
           
           {/* Mobile Menu Toggle */}
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(true)}
-            className="lg:hidden absolute left-6 top-1/2 -translate-y-1/2 text-gray-900 hover:text-[#E86F24] transition-colors p-2 -ml-2 flex items-center"
+            className="2xl:hidden absolute left-6 top-1/2 -translate-y-1/2 text-gray-900 hover:text-[#E86F24] transition-colors p-2 -ml-2 flex items-center"
             aria-label="Open mobile menu"
           >
             <Menu size={30} strokeWidth={1.7} />
@@ -72,7 +76,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-10 text-[15px] font-serif font-medium text-gray-900 pr-2">
+          <nav className="hidden 2xl:flex items-center gap-10 text-[15px] font-serif font-medium text-gray-900 pr-2">
             {navItems.map((item) => (
               item.onClick ? (
                 <button
@@ -105,7 +109,7 @@ export default function Header() {
 
       {/* Mobile Sidebar */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[120] lg:hidden">
+        <div className="fixed inset-0 z-[120] 2xl:hidden">
           <div 
             className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" 
             onClick={() => setIsMobileMenuOpen(false)}
@@ -118,13 +122,12 @@ export default function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex items-center gap-3 text-left"
               >
-                <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#E86F24] flex items-center justify-center">
-                  <UtensilsCrossed size={20} strokeWidth={1.7} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[12px] font-bold tracking-[0.24em] text-gray-900 uppercase leading-none">Varivo</span>
-                  <span className="text-[8px] tracking-[0.28em] font-bold text-[#E86F24] uppercase mt-1 leading-none">Bistro</span>
-                </div>
+                <Image
+              src={logo}
+              alt="Varivo Logo"
+              className="h-40 lg:h-44 w-auto object-contain"
+              priority // High priority loading for header
+            />
               </Link>
 
               <button
