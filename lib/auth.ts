@@ -16,9 +16,8 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-          
           const payload = {
             email: credentials.email,
             password: credentials.password,

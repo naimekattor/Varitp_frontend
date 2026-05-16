@@ -50,8 +50,8 @@ export default function CheckoutPage() {
     if (session?.user) {
       setFormData((prev) => ({
         ...prev,
-        firstName: session.user.name?.split(' ')[0] || '',
-        lastName: session.user.name?.split(' ')[1] || '',
+        firstName: session.user.first_name?.split(' ')[0] || '',
+        lastName: session.user.last_name?.split(' ')[1] || '',
         email: session.user.email || '',
       }));
     }
