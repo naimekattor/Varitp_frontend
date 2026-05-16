@@ -1,9 +1,48 @@
+"use client"
+import api from '@/lib/api';
 import { Send } from 'lucide-react';
 import Image from 'next/image'; 
 import Link from 'next/link';
+import { useState } from 'react';
 import { FaFacebook, FaLinkedin, FaTwitter } from 'react-icons/fa';
 
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+const [error, setError] = useState("");
+
+  const handleSubscribe = async () => {
+  setMessage("");
+  setError("");
+
+  if (!email.trim()) {
+    setError("Please enter your email");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const response = await api.post("/other/api/v1/subscribe-newsletter/", {
+      email,
+    });
+
+    setMessage(
+      response?.data?.message ||
+        "Subscribed successfully"
+    );
+
+    setEmail("");
+  } catch (error: any) {
+    setError(
+      error?.response?.data?.message ||
+        "Something went wrong"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <footer className="bg-[#FAF9F8] pt-20 pb-8 mt-auto border-t border-gray-100 shadow-[inset_0_20px_20px_-20px_rgba(0,0,0,0.03)] w-full flex-shrink-0">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-12">
@@ -60,11 +99,22 @@ export default function Footer() {
           <div className="col-span-2 space-y-6 md:ml-auto">
             <h4 className="text-[16px] font-semibold text-gray-900">Subscribe Our Newsletter</h4>
             <div className="flex w-full bg-white rounded-full overflow-hidden shadow-sm border border-gray-100 p-1.5 focus-within:ring-2 focus-within:ring-[#E86F24]/20 transition-all max-w-[400px]">
-              <input type="email" placeholder="Email address" className="flex-1 bg-transparent px-4 py-2 outline-none text-[14px] placeholder:text-gray-300" />
-              <button className="bg-[#E86F24] hover:bg-[#d4621c] text-white px-8 py-2.5 rounded-full text-[14px] font-medium transition-colors">
+              <input onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email address" className="flex-1 bg-transparent px-4 py-2 outline-none text-[14px] placeholder:text-gray-300" />
+              <button onClick={()=>handleSubscribe()} className="bg-[#E86F24] hover:bg-[#d4621c] text-white px-8 py-2.5 rounded-full text-[14px] font-medium transition-colors">
                 Book a Demo
               </button>
             </div>
+            {message && (
+  <p className="text-green-600 text-sm mt-3 px-2">
+    {message}
+  </p>
+)}
+
+{error && (
+  <p className="text-red-500 text-sm mt-3 px-2">
+    {error}
+  </p>
+)}
           </div>
         </div>
 

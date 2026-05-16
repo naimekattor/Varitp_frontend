@@ -97,18 +97,31 @@ export default function AuthPage({
     setIsLoading(true);
     setError(null);
     try {
+      console.log("Signing in with email:", signInForm.email);
+      
       const result = await signIn("credentials", {
         email: signInForm.email,
         password: signInForm.password,
         redirect: false,
       });
 
+      console.log("SignIn result:", result);
+
       if (result?.error) {
-        setError("Invalid email or password.");
-      } else {
+        console.error("SignIn error:", result.error);
+        if (result.error === "CredentialsSignin") {
+          setError("Invalid email or password.");
+        } else {
+          setError(result.error || "Authentication failed.");
+        }
+      } else if (result?.ok) {
+        console.log("Sign in successful");
         onBack(); // Redirect home or to dashboard
+      } else {
+        setError("Sign in failed. Please try again.");
       }
-    } catch (err) {
+    } catch (err: any) {
+      console.error("Sign in exception:", err);
       setError("An unexpected error occurred.");
     } finally {
       setIsLoading(false);
@@ -171,7 +184,22 @@ export default function AuthPage({
     setError(null);
     try {
       const otp = otpDigits.join("");
-      const email = viewState === "otp" ? signUpForm.email : signInForm.email;
+      
+      // Determine which email to use based on the flow
+      let email = "";
+      if (forgotPasswordEmail) {
+        // Forgot password flow
+        email = forgotPasswordEmail;
+      } else if (viewState === "otp" && signUpForm.email) {
+        // Registration flow
+        email = signUpForm.email;
+      } else {
+        // Fallback
+        email = signInForm.email;
+      }
+      
+      console.log("OTP Submit - Email:", email, "OTP:", otp);
+      
       const response = await api.post("/auth/api/v1/verify-otp/", {
         email,
         otp,

@@ -68,7 +68,7 @@ export default function CheckoutPage() {
     setError(null);
     try {
       await applyCoupon(couponInput);
-      setCouponInput('');
+      
     } catch (err) {
       console.error("Coupon error:", err);
     } finally {
@@ -134,12 +134,14 @@ export default function CheckoutPage() {
         zip_code: formData.zipCode,
         phone: formData.phone,
         email: formData.email,
+        coupon:couponInput
       };
 
       const response = await api.post("/payment/api/v1/place-order/", payload);
 
       if (response.data.status || response.data.success) {
         setSuccess(true);
+        // setCouponInput('');
         
         const order = response.data.order;
         
@@ -157,6 +159,7 @@ export default function CheckoutPage() {
           city: order?.city || formData.city,
           zip_code: order?.zip_code || formData.zipCode,
           created_at: order?.created_at || new Date().toISOString(),
+          
         };
         
         setLastOrder(orderData);

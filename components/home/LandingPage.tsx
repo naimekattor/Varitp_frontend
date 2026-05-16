@@ -418,11 +418,56 @@ export default function LandingPage({
         </section>
       )}
 
-      {/* Ingredients Box - Only show if data exists (not in current API) */}
-      {/* Nutrition info - Only show if data exists (not in current API) */}
-      {hasNutrition && (
-        <section className="px-6 pb-32 pt-20 max-w-4xl mx-auto">
-          {/* ... existing nutrition code if you want to keep it as placeholder ... */}
+      {/* Ingredients Box */}
+      {selectedMenu && (
+        <section className="px-6 pb-20 pt-16 max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-12 text-center font-medium">
+            Ingredients
+          </h2>
+          <div className="bg-gray-50 rounded-3xl p-8 md:p-12">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 md:gap-8">
+              {[
+                { name: "Chicken", emoji: "🍗" },
+                { name: "Ricotta cheese", emoji: "🧀" },
+                { name: "Swiss chard", emoji: "🥬" },
+                { name: "Swiss chard", emoji: "🥬" },
+                { name: "Potatoes", emoji: "🥔" },
+                { name: "Green beans", emoji: "🫘" },
+                { name: "Garlic", emoji: "🧄" },
+                { name: "Garlic", emoji: "🧄" },
+              ].map((ingredient, idx) => (
+                <div key={idx} className="flex flex-col items-center gap-3 text-center">
+                  <div className="text-3xl md:text-4xl">{ingredient.emoji}</div>
+                  <p className="text-gray-600 font-medium text-sm md:text-base">{ingredient.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Nutrition info */}
+      {selectedMenu && (
+        <section className="px-6 pb-32 pt-16 max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-12 text-center font-medium">
+            Nutrition
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
+            {[
+              { value: "650", label: "Calories", unit: "" },
+              { value: "35", label: "Protein", unit: "g" },
+              { value: "50", label: "Carbs", unit: "g" },
+              { value: "28", label: "Fat", unit: "g" },
+            ].map((nutrition, idx) => (
+              <div key={idx} className="bg-gray-50 rounded-2xl p-6 md:p-8 text-center hover:shadow-lg transition-all">
+                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                  {nutrition.value}
+                  <span className="text-lg text-gray-400 ml-1">{nutrition.unit}</span>
+                </div>
+                <p className="text-gray-600 font-medium text-sm md:text-base">{nutrition.label}</p>
+              </div>
+            ))}
+          </div>
         </section>
       )}
 

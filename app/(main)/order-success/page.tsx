@@ -88,7 +88,7 @@ export default function OrderSuccessPage() {
             </h2>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <button className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-500 font-bold text-sm hover:bg-gray-50 transition-all">
               <Phone size={18} className="text-gray-300" />
               +1 101 9249 9293 192
@@ -96,13 +96,13 @@ export default function OrderSuccessPage() {
             <button className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#E86F24] hover:bg-[#d4621c] text-white font-bold text-sm transition-all shadow-[0_10px_20px_-5px_rgba(232,111,36,0.3)]">
               Mark as complete
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* 4. Status Bar */}
-        <div className="w-full bg-[#E8F9EE] border border-[#D1FAE5] py-5 px-8 rounded-2xl mb-12 flex items-center justify-center text-[#10B981] font-bold text-[15px] shadow-sm">
+        {/* <div className="w-full bg-[#E8F9EE] border border-[#D1FAE5] py-5 px-8 rounded-2xl mb-12 flex items-center justify-center text-[#10B981] font-bold text-[15px] shadow-sm">
           Your order is ready for pickup
-        </div>
+        </div> */}
 
         {/* 5. Details Section (Two Columns) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
