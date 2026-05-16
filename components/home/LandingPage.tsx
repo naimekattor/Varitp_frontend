@@ -304,7 +304,7 @@ export default function LandingPage({
               onClick={() => setSelectedDate(new Date().toISOString().split("T")[0])}
               className="bg-white border-2 border-gray-100 hover:border-[#E86F24] hover:text-[#E86F24] text-gray-500 px-8 py-3.5 rounded-2xl font-bold transition-all active:scale-95 shadow-sm"
             >
-              Check Today's Menu
+              Check Today&apos;s Menu
             </button>
           </div>
         ) : (

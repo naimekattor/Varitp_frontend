@@ -71,8 +71,11 @@ export const useCartStore = create<CartState>((set, get) => ({
   fetchCart: async (couponCode?: string) => {
     set({ isLoading: true, error: null });
     try {
-      const url = couponCode 
-        ? `/product/api/v1/cart-items/?coupon=${couponCode}`
+      // Use provided code or fallback to existing code in store
+      const codeToUse = couponCode !== undefined ? couponCode : get().coupon?.code;
+      
+      const url = codeToUse 
+        ? `/product/api/v1/cart-items/?coupon=${codeToUse}`
         : "/product/api/v1/cart-items/";
       
       const response = await api.get(url);
@@ -148,9 +151,9 @@ export const useCartStore = create<CartState>((set, get) => ({
   },
 
   removeCoupon: async () => {
-    set({ isLoading: true, error: null });
+    set({ isLoading: true, error: null, coupon: null });
     try {
-      await get().fetchCart();
+      await get().fetchCart(""); // Pass empty string to explicitly clear on backend if needed
     } catch (err: any) {
       console.error("Remove coupon error:", err);
       set({ error: err.response?.data?.message || "Failed to remove coupon" });

@@ -24,6 +24,7 @@ export default function CheckoutPage() {
   const applyCoupon = useCartStore((state) => state.applyCoupon);
   const removeCoupon = useCartStore((state) => state.removeCoupon);
   const finalAmount = useCartStore((state) => state.finalAmount);
+  const fetchCart = useCartStore((state) => state.fetchCart);
   
   const router = useRouter();
   const { data: session } = useSession();
@@ -56,6 +57,10 @@ export default function CheckoutPage() {
       }));
     }
   }, [session]);
+
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   // Sync couponInput with the applied coupon from store
   useEffect(() => {

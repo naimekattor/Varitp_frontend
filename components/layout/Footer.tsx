@@ -100,7 +100,7 @@ const [error, setError] = useState("");
             <h4 className="text-[16px] font-semibold text-gray-900">Subscribe Our Newsletter</h4>
             <div className="flex w-full bg-white rounded-full overflow-hidden shadow-sm border border-gray-100 p-1.5 focus-within:ring-2 focus-within:ring-[#E86F24]/20 transition-all max-w-[400px]">
               <input onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email address" className="flex-1 bg-transparent px-4 py-2 outline-none text-[14px] placeholder:text-gray-300" />
-              <button onClick={()=>handleSubscribe()} className="bg-[#E86F24] hover:bg-[#d4621c] text-white px-8 py-2.5 rounded-full text-[14px] font-medium transition-colors">
+              <button onClick={()=>handleSubscribe()} className="bg-[#E86F24] hover:bg-[#d4621c] text-white px-8 py-2.5 rounded-full text-[14px] font-medium transition-colors text-nowrap">
                 Book a Demo
               </button>
             </div>
