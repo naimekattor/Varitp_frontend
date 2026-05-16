@@ -57,6 +57,13 @@ export default function CheckoutPage() {
     }
   }, [session]);
 
+  // Sync couponInput with the applied coupon from store
+  useEffect(() => {
+    if (coupon?.code) {
+      setCouponInput(coupon.code);
+    }
+  }, [coupon]);
+
   const subtotal = useCartStore((state) => state.totalPrice);
 
   const handleApplyCoupon = async () => {
@@ -81,6 +88,7 @@ export default function CheckoutPage() {
     setError(null);
     try {
       await removeCoupon();
+      setCouponInput('');
     } catch (err) {
       console.error("Remove coupon error:", err);
     } finally {
@@ -124,7 +132,7 @@ export default function CheckoutPage() {
         return;
       }
 
-      const payload = {
+      const payload: any = {
         payment_method_id: paymentMethod.id,
         first_name: formData.firstName,
         last_name: formData.lastName,
@@ -134,8 +142,11 @@ export default function CheckoutPage() {
         zip_code: formData.zipCode,
         phone: formData.phone,
         email: formData.email,
-        coupon:couponInput
       };
+
+      if (couponInput.trim()) {
+        payload.coupon = couponInput;
+      }
 
       const response = await api.post("/payment/api/v1/place-order/", payload);
 
