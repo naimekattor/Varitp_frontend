@@ -1,4 +1,5 @@
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Props {
   form: any;
@@ -25,17 +26,18 @@ export default function ResetPasswordForm({
   onSubmit,
   isLoading,
 }: Props) {
+  const t = useTranslations("Auth");
   return (
     <div className="w-full animate-in fade-in slide-in-from-top-2 duration-500">
       <form className="w-full space-y-5" onSubmit={onSubmit}>
         <div className="space-y-1.5 relative z-10 transition-all">
           <label className="text-[13px] font-bold text-gray-800 tracking-wide ml-1">
-            New Password
+            {t("newPasswordLabel")}
           </label>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Enter new password"
+              placeholder={t("newPasswordPlaceholder")}
               value={form.password}
               disabled={isLoading}
               onChange={(e) => updateField("password", e.target.value)}
@@ -58,12 +60,12 @@ export default function ResetPasswordForm({
 
         <div className="space-y-1.5 relative z-10 transition-all">
           <label className="text-[13px] font-bold text-gray-800 tracking-wide ml-1">
-            Confirm Password
+            {t("confirmPassword")}
           </label>
           <div className="relative">
             <input
               type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm new password"
+              placeholder={t("confirmNewPassword")}
               value={form.confirmPassword}
               disabled={isLoading}
               onChange={(e) => updateField("confirmPassword", e.target.value)}
@@ -93,25 +95,25 @@ export default function ResetPasswordForm({
             {isLoading ? (
               <>
                 <Loader2 size={18} className="animate-spin" />
-                Updating...
+                {t("updating")}
               </>
             ) : (
-              "Change Password"
+              t("changePassword")
             )}
           </button>
         </div>
       </form>
 
       <p className="mt-20 text-[14px] text-gray-400 transition-all text-center pb-2">
-        Don't have an account?{" "}
+        {t("dontHaveAccount")}{" "}
         <button
           type="button"
           onClick={onSignUp}
           className="text-[#E86F24] font-bold hover:underline ml-1"
         >
-          Create Account
+          {t("createAccount")}
         </button>
       </p>
     </div>
   );
-}
+}

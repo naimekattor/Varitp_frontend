@@ -1,5 +1,5 @@
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { AuthViewState } from "./types";
+import { useTranslations } from "next-intl";
 
 interface Props {
   form: any;
@@ -22,12 +22,13 @@ export default function SignInForm({
   onSubmit,
   isLoading,
 }: Props) {
+  const t = useTranslations("Auth");
   return (
     <div className="w-full animate-in fade-in slide-in-from-top-2 duration-500">
       <form className="w-full space-y-5" onSubmit={onSubmit}>
         <div className="space-y-1.5">
           <label className="text-[13px] font-semibold text-gray-700 ml-1">
-            Email Address
+            {t("emailAddress")}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#E86F24]">
@@ -35,7 +36,7 @@ export default function SignInForm({
             </div>
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder={t("enterEmail")}
               value={form.email}
               disabled={isLoading}
               onChange={(e) => updateField("email", e.target.value)}
@@ -47,7 +48,7 @@ export default function SignInForm({
         <div className="space-y-1.5 relative z-10 transition-all">
           <div className="flex justify-between items-center ml-1">
             <label className="text-[13px] font-semibold text-gray-700">
-              Password
+              {t("password")}
             </label>
             <button
               type="button"
@@ -55,7 +56,7 @@ export default function SignInForm({
               onClick={onForgotPassword}
               className="text-[11px] text-gray-400 hover:text-[#E86F24] transition-colors font-medium disabled:opacity-50"
             >
-              Forgot Password?
+              {t("forgotPasswordQuestion")}
             </button>
           </div>
           <div className="relative">
@@ -94,23 +95,23 @@ export default function SignInForm({
             {isLoading ? (
               <>
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Signing In...
+                {t("signingIn")}
               </>
             ) : (
-              "Sign In"
+              t("signIn")
             )}
           </button>
         </div>
       </form>
 
       <p className="mt-10 text-[14px] text-gray-400 transition-all text-center pb-2">
-        Don't have an account?{" "}
+        {t("dontHaveAccount")}{" "}
         <button
           type="button"
           onClick={onSignUp}
           className="text-[#E86F24] font-bold hover:underline ml-1"
         >
-          Sign Up
+          {t("signUp")}
         </button>
       </p>
     </div>

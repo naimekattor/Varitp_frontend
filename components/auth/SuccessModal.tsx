@@ -1,4 +1,5 @@
 import { X, ArrowRight, Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Props {
   open: boolean;
@@ -6,6 +7,7 @@ interface Props {
 }
 
 export default function SuccessModal({ open, onClose }: Props) {
+  const t = useTranslations("Auth");
   if (!open) return null;
 
   return (
@@ -50,17 +52,17 @@ export default function SuccessModal({ open, onClose }: Props) {
         </div>
 
         <h3 className="text-2xl font-serif font-bold text-[#E86F24] mb-3">
-          Password Changed
+          {t("passwordChanged")}
         </h3>
         <p className="text-gray-400 text-[14px] font-medium mb-10 px-4">
-          Your password has been changed successfully!
+          {t("passwordChangedText")}
         </p>
 
         <button
           onClick={onClose}
           className="w-full bg-[#E86F24] hover:bg-[#d4621c] text-white py-4 rounded-xl font-bold transition-all text-[15px] shadow-[0_10px_25px_-5px_rgba(232,111,36,0.3)] active:scale-[0.98] flex items-center justify-center gap-2 group"
         >
-          Return to Login
+          {t("returnToLogin")}
           <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
         </button>
       </div>

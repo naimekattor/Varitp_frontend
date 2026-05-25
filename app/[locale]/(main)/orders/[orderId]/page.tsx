@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/src/i18n/navigation";
 import Image from "next/image";
 import { CheckCircle, Phone, MapPin, Clock, Calendar, ArrowLeft, Loader2 } from "lucide-react";
 import api from "@/lib/api";

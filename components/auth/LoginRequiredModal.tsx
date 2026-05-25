@@ -1,5 +1,6 @@
 import React from "react";
 import { User, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Props {
   open: boolean;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function LoginRequiredModal({ open, onClose, onLogin, onRegister }: Props) {
+  const t = useTranslations("Auth");
   if (!open) return null;
 
   return (
@@ -33,10 +35,10 @@ export default function LoginRequiredModal({ open, onClose, onLogin, onRegister 
         </div>
 
         <h3 className="text-2xl font-serif font-bold text-gray-900 mb-3">
-          Sign In Required
+          {t("signInRequired")}
         </h3>
         <p className="text-gray-500 mb-8 leading-relaxed">
-          Please sign in or create an account to add items to your cart and enjoy our daily specials.
+          {t("signInRequiredText")}
         </p>
 
         <div className="space-y-3">
@@ -44,13 +46,13 @@ export default function LoginRequiredModal({ open, onClose, onLogin, onRegister 
             onClick={onLogin}
             className="w-full bg-[#E86F24] hover:bg-[#d4621c] text-white py-4 rounded-xl font-bold transition-all text-[15px] shadow-lg active:scale-[0.98]"
           >
-            Sign In
+            {t("signIn")}
           </button>
           <button
             onClick={onRegister}
             className="w-full bg-white border-2 border-gray-100 hover:bg-gray-50 text-gray-700 py-4 rounded-xl font-bold transition-all text-[15px] active:scale-[0.98]"
           >
-            Create an Account
+            {t("createAnAccount")}
           </button>
         </div>
       </div>

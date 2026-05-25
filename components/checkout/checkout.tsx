@@ -1,8 +1,7 @@
 "use client"
 import Image from 'next/image';
 import { useCartStore } from '@/store/useCartStore';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link, useRouter } from '@/src/i18n/navigation';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, CreditCard, Truck, User } from 'lucide-react';
@@ -15,7 +14,9 @@ import {
 } from "@stripe/react-stripe-js";
 import api from '@/lib/api';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 export default function CheckoutPage() {
+  const t = useTranslations();
   const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
   const setLastOrder = useCartStore((state) => state.setLastOrder);
@@ -73,7 +74,7 @@ export default function CheckoutPage() {
 
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) {
-      setError('Please enter a coupon code');
+      setError(t("Checkout.couponRequired"));
       return;
     }
     setIsApplyingCoupon(true);
@@ -110,7 +111,7 @@ export default function CheckoutPage() {
 
     const cardElement = elements.getElement(CardNumberElement);
     if (!cardElement) {
-      setError("Payment details not found. Please refresh and try again.");
+      setError(t("Checkout.paymentMissing"));
       setIsProcessing(false);
       return;
     }
@@ -132,7 +133,7 @@ export default function CheckoutPage() {
       });
 
       if (stripeError) {
-        setError(stripeError.message || "An error occurred with your card.");
+        setError(stripeError.message || t("Checkout.cardError"));
         setIsProcessing(false);
         return;
       }
@@ -188,11 +189,11 @@ export default function CheckoutPage() {
           router.push('/order-success');
         }, 1500);
       } else {
-        setError(response.data.message || "Failed to place order.");
+        setError(response.data.message || t("Checkout.failedOrder"));
       }
     } catch (err: any) {
       console.error("Order error:", err);
-      setError(err.response?.data?.message || "Something went wrong. Please try again.");
+      setError(err.response?.data?.message || t("Checkout.orderError"));
     } finally {
       setIsProcessing(false);
     }
@@ -201,10 +202,10 @@ export default function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
-        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">Your cart is empty</h2>
-        <p className="text-gray-500 mb-8">You need to add some delicious food to your cart before checking out.</p>
+        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">{t("Cart.emptyTitle")}</h2>
+        <p className="text-gray-500 mb-8">{t("Checkout.emptyText")}</p>
         <Link href="/" className="bg-[#E86F24] hover:bg-[#d4621c] text-white px-8 py-3.5 rounded-xl font-bold transition-all">
-          Browse Menu
+          {t("Common.browseMenu")}
         </Link>
       </div>
     );
@@ -215,13 +216,13 @@ export default function CheckoutPage() {
       <div className="bg-gradient-to-b from-[#FFF5F0]/60 to-white pt-32 pb-12">
         <div className="w-full max-w-[1400px] mx-auto px-6">
           <div className="text-[13px] font-medium mb-6 text-gray-400 flex items-center gap-1.5">
-            <Link href="/" className="hover:text-gray-700 transition-colors">Home</Link> 
+            <Link href="/" className="hover:text-gray-700 transition-colors">{t("Common.home")}</Link> 
             <span>/</span> 
-            <Link href="/cart" className="hover:text-gray-700 transition-colors">Cart</Link> 
+            <Link href="/cart" className="hover:text-gray-700 transition-colors">{t("Common.cart")}</Link> 
             <span>/</span> 
-            <span className="text-[#E86F24]">Checkout</span>
+            <span className="text-[#E86F24]">{t("Common.checkout")}</span>
           </div>
-          <h1 className="text-4xl md:text-[2.75rem] font-serif font-bold text-gray-900 mb-10 tracking-tight">Checkout</h1>
+          <h1 className="text-4xl md:text-[2.75rem] font-serif font-bold text-gray-900 mb-10 tracking-tight">{t("Checkout.title")}</h1>
         </div>
       </div>
 
@@ -234,23 +235,23 @@ export default function CheckoutPage() {
                 <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center text-[#E86F24]">
                   <User size={20} />
                 </div>
-                <h2 className="text-2xl font-serif font-bold text-gray-900">Personal Information</h2>
+                <h2 className="text-2xl font-serif font-bold text-gray-900">{t("Checkout.personal")}</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[13px] font-bold text-gray-700 ml-1">First Name</label>
+                  <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Checkout.firstName")}</label>
                   <input required value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} type="text" placeholder="John" className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[13px] font-bold text-gray-700 ml-1">Last Name</label>
+                  <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Checkout.lastName")}</label>
                   <input required value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} type="text" placeholder="Doe" className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm" />
                 </div>
                 <div className="space-y-2 sm:col-span-2">
-                  <label className="text-[13px] font-bold text-gray-700 ml-1">Email Address</label>
+                  <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Common.emailAddress")}</label>
                   <input required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} type="email" placeholder="john@example.com" className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm" />
                 </div>
                 <div className="space-y-2 sm:col-span-2">
-                  <label className="text-[13px] font-bold text-gray-700 ml-1">Phone Number</label>
+                  <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Checkout.phone")}</label>
                   <input required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} type="tel" placeholder="+1 (555) 000-0000" className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm" />
                 </div>
               </div>
@@ -262,19 +263,19 @@ export default function CheckoutPage() {
                 <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center text-[#E86F24]">
                   <Truck size={20} />
                 </div>
-                <h2 className="text-2xl font-serif font-bold text-gray-900">Delivery Address</h2>
+                <h2 className="text-2xl font-serif font-bold text-gray-900">{t("Checkout.delivery")}</h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2 sm:col-span-2">
-                  <label className="text-[13px] font-bold text-gray-700 ml-1">Street Address</label>
+                  <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Checkout.street")}</label>
                   <input required value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} type="text" placeholder="123 Main St, Apt 4B" className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[13px] font-bold text-gray-700 ml-1">City</label>
+                  <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Checkout.city")}</label>
                   <input required value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} type="text" placeholder="New York" className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[13px] font-bold text-gray-700 ml-1">ZIP Code</label>
+                  <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Checkout.zip")}</label>
                   <input required value={formData.zipCode} onChange={e => setFormData({...formData, zipCode: e.target.value})} type="text" placeholder="10001" className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm" />
                 </div>
               </div>
@@ -286,26 +287,26 @@ export default function CheckoutPage() {
                 <div className="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center text-[#E86F24]">
                   <CreditCard size={20} />
                 </div>
-                <h2 className="text-2xl font-serif font-bold text-gray-900">Payment Details</h2>
+                <h2 className="text-2xl font-serif font-bold text-gray-900">{t("Checkout.payment")}</h2>
               </div>
               
               <div className="space-y-6">
                 {/* Cardholder Name */}
                 <div className="space-y-2">
-                  <label className="text-[13px] font-bold text-gray-700 ml-1">Cardholder Name *</label>
+                  <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Checkout.cardholder")}</label>
                   <input 
                     required 
                     value={formData.cardholderName} 
                     onChange={e => setFormData({...formData, cardholderName: e.target.value})} 
                     type="text" 
-                    placeholder="Enter the Card Holder Name" 
+                    placeholder={t("Checkout.cardholderPlaceholder")} 
                     className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm" 
                   />
                 </div>
 
                 {/* Card Number */}
                 <div className="space-y-2">
-                  <label className="text-[13px] font-bold text-gray-700 ml-1">Card Number *</label>
+                  <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Checkout.cardNumber")}</label>
                   <div className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus-within:bg-white focus-within:border-[#E86F24] transition-all">
                     <CardNumberElement 
                       options={{
@@ -321,7 +322,7 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {/* Expiry Date */}
                   <div className="space-y-2">
-                    <label className="text-[13px] font-bold text-gray-700 ml-1">Expiry Date *</label>
+                    <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Checkout.expiry")}</label>
                     <div className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus-within:bg-white focus-within:border-[#E86F24] transition-all">
                       <CardExpiryElement 
                         options={{
@@ -335,7 +336,7 @@ export default function CheckoutPage() {
 
                   {/* CVV */}
                   <div className="space-y-2">
-                    <label className="text-[13px] font-bold text-gray-700 ml-1">CVV *</label>
+                    <label className="text-[13px] font-bold text-gray-700 ml-1">{t("Checkout.cvv")}</label>
                     <div className="w-full px-5 py-4 rounded-xl border border-gray-100 bg-gray-50/30 outline-none focus-within:bg-white focus-within:border-[#E86F24] transition-all">
                       <CardCvcElement 
                         options={{
@@ -352,7 +353,7 @@ export default function CheckoutPage() {
                 {/* Footer Text */}
                 <div className="mt-8 p-4 bg-[#F9FAFB] rounded-xl text-center">
                   <p className="text-[12px] text-gray-400 font-medium">
-                    Your payment information is encrypted and secure. We do not store your card details.
+                    {t("Checkout.secure")}
                   </p>
                 </div>
               </div>
@@ -361,7 +362,7 @@ export default function CheckoutPage() {
 
           {/* Right Summary Sidebar */}
           <div className="w-full lg:w-[40%] bg-white border border-gray-100 rounded-[2.5rem] p-10 sticky top-32 shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
-            <h2 className="text-2xl font-serif font-bold text-gray-900 mb-8 tracking-tight">Your Order</h2>
+            <h2 className="text-2xl font-serif font-bold text-gray-900 mb-8 tracking-tight">{t("Checkout.yourOrder")}</h2>
             
             <div className="space-y-6 mb-10 max-h-[300px] overflow-y-auto pr-2 scrollbar-hide">
               {items.map((item) => (
@@ -380,7 +381,7 @@ export default function CheckoutPage() {
                     </div>
                    <div className="flex-1">
                      <h4 className="text-sm font-bold text-gray-900 leading-tight">{item.title}</h4>
-                     <p className="text-[11px] text-gray-400 mt-1 font-medium">Quantity: {item.quantity}</p>
+                     <p className="text-[11px] text-gray-400 mt-1 font-medium">{t("Checkout.quantity", {quantity: item.quantity})}</p>
                    </div>
                    <div className="text-sm font-bold text-gray-900">
                      ${(item.price * item.quantity).toFixed(2)}
@@ -391,7 +392,7 @@ export default function CheckoutPage() {
 
             <div className="space-y-4 mb-10 pb-10 border-b border-gray-100">
               <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-500 font-medium">Subtotal</span>
+                <span className="text-gray-500 font-medium">{t("Common.subtotal")}</span>
                 <span className="text-gray-900 font-bold">${subtotal.toFixed(2)}</span>
               </div>
               
@@ -399,7 +400,7 @@ export default function CheckoutPage() {
               {charges.map((charge) => (
                 <div key={charge.name} className="flex justify-between items-center text-sm">
                   <span className="text-gray-500 font-medium capitalize">
-                    {charge.name === 'delivery_fee' ? 'Delivery Fee' : charge.name}
+                    {charge.name === 'delivery_fee' ? t("Common.deliveryFee") : charge.name}
                   </span>
                   <span className="text-gray-900 font-bold">${parseFloat(charge.value).toFixed(2)}</span>
                 </div>
@@ -408,7 +409,7 @@ export default function CheckoutPage() {
               {/* Display Coupon Discount */}
               {coupon && (
                 <div className="flex justify-between items-center text-sm text-green-600">
-                  <span className="font-medium">Coupon ({coupon.code})</span>
+                  <span className="font-medium">{t("Common.coupon")} ({coupon.code})</span>
                   <span className="font-bold">-${parseFloat(coupon.discount_value).toFixed(2)}</span>
                 </div>
               )}
@@ -419,7 +420,7 @@ export default function CheckoutPage() {
               <div className="mb-8 flex gap-2">
                 <input 
                   type="text" 
-                  placeholder="Promo code" 
+                  placeholder={t("Common.promoCode")} 
                   value={couponInput}
                   onChange={(e) => setCouponInput(e.target.value)}
                   className="flex-1 px-4 py-3 rounded-lg border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm"
@@ -431,27 +432,27 @@ export default function CheckoutPage() {
                   disabled={isApplyingCoupon}
                   className="px-6 py-3 bg-black hover:bg-gray-800 text-white rounded-lg font-bold transition-all text-sm disabled:opacity-50"
                 >
-                  {isApplyingCoupon ? 'Applying...' : 'Apply'}
+                  {isApplyingCoupon ? t("Common.applying") : t("Common.apply")}
                 </button>
               </div>
             )}
 
             {coupon && (
               <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
-                <span className="text-sm font-medium text-green-700">Coupon <strong>{coupon.code}</strong> applied!</span>
+                <span className="text-sm font-medium text-green-700">{t("Common.coupon")} <strong>{coupon.code}</strong> {t("Cart.applied")}</span>
                 <button 
                   type="button"
                   onClick={handleRemoveCoupon}
                   disabled={isApplyingCoupon}
                   className="text-xs text-green-600 hover:text-green-700 font-bold"
                 >
-                  Remove
+                  {t("Common.remove")}
                 </button>
               </div>
             )}
 
             <div className="flex justify-between items-end mb-10">
-              <span className="text-lg font-bold text-gray-900">Total</span>
+              <span className="text-lg font-bold text-gray-900">{t("Common.total")}</span>
               <span className="text-3xl font-bold text-[#E86F24] tracking-tight">${finalAmount.toFixed(2)}</span>
             </div>
 
@@ -465,7 +466,7 @@ export default function CheckoutPage() {
             {success && (
               <div className="mb-6 p-4 bg-green-50 border border-green-100 rounded-xl flex items-center gap-3 text-green-600 text-sm">
                 <CheckCircle2 size={18} />
-                <span>✓ Payment completed successfully! Redirecting to success page...</span>
+                <span>{t("Checkout.success")}</span>
               </div>
             )}
 
@@ -477,19 +478,19 @@ export default function CheckoutPage() {
               {isProcessing ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
-                  Processing Payment...
+                  {t("Checkout.processing")}
                 </>
               ) : success ? (
                 <>
                   <CheckCircle2 size={20} />
-                  Redirecting to Success...
+                  {t("Checkout.redirecting")}
                 </>
               ) : (
-                'Complete Purchase'
+                t("Checkout.complete")
               )}
             </button>
             <Link href="/cart" className="w-full mt-4 bg-white text-gray-500 hover:text-gray-900 py-3 rounded-xl font-bold transition-all text-xs flex items-center justify-center gap-2">
-              <ArrowLeft size={14} /> Edit Cart
+              <ArrowLeft size={14} /> {t("Checkout.editCart")}
             </Link>
           </div>
         </form>

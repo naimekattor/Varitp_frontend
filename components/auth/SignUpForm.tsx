@@ -1,4 +1,5 @@
 import { MapPin, Phone, Lock, Eye, EyeOff, Mail } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Props {
   form: any;
@@ -23,17 +24,18 @@ export default function SignUpForm({
   onSubmit,
   isLoading,
 }: Props) {
+  const t = useTranslations("Auth");
   return (
     <div className="w-full animate-in fade-in slide-in-from-top-2 duration-500">
       <form className="w-full space-y-5" onSubmit={onSubmit}>
         <div className="flex flex-col sm:flex-row gap-4 animate-in fade-in slide-in-from-top-2">
           <div className="flex-1 space-y-1.5">
             <label className="text-[13px] font-semibold text-gray-700 ml-1">
-              First Name
+              {t("firstName")}
             </label>
             <input
               type="text"
-              placeholder="First Name"
+              placeholder={t("firstName")}
               value={form.firstName}
               disabled={isLoading}
               onChange={(e) => updateField("firstName", e.target.value)}
@@ -42,11 +44,11 @@ export default function SignUpForm({
           </div>
           <div className="flex-1 space-y-1.5">
             <label className="text-[13px] font-semibold text-gray-700 ml-1">
-              Last Name
+              {t("lastName")}
             </label>
             <input
               type="text"
-              placeholder="Last Name"
+              placeholder={t("lastName")}
               value={form.lastName}
               disabled={isLoading}
               onChange={(e) => updateField("lastName", e.target.value)}
@@ -57,7 +59,7 @@ export default function SignUpForm({
 
         <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2">
           <label className="text-[13px] font-semibold text-gray-700 ml-1">
-            Email Address
+            {t("emailAddress")}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#E86F24]">
@@ -65,7 +67,7 @@ export default function SignUpForm({
             </div>
             <input
               type="email"
-              placeholder="Enter your email address"
+              placeholder={t("enterEmailAddress")}
               value={form.email}
               disabled={isLoading}
               onChange={(e) => updateField("email", e.target.value)}
@@ -76,7 +78,7 @@ export default function SignUpForm({
 
         <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2">
           <label className="text-[13px] font-semibold text-gray-700 ml-1">
-            Address
+            {t("address")}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#E86F24]">
@@ -84,7 +86,7 @@ export default function SignUpForm({
             </div>
             <input
               type="text"
-              placeholder="Enter your full address"
+              placeholder={t("enterAddress")}
               value={form.address}
               disabled={isLoading}
               onChange={(e) => updateField("address", e.target.value)}
@@ -95,7 +97,7 @@ export default function SignUpForm({
 
         <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2">
           <label className="text-[13px] font-semibold text-gray-700 ml-1">
-            Phone Number
+            {t("phoneNumber")}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#E86F24]">
@@ -103,7 +105,7 @@ export default function SignUpForm({
             </div>
             <input
               type="tel"
-              placeholder="Enter your phone number"
+              placeholder={t("enterPhone")}
               value={form.phone}
               disabled={isLoading}
               onChange={(e) => updateField("phone", e.target.value)}
@@ -114,7 +116,7 @@ export default function SignUpForm({
 
         <div className="space-y-1.5 relative z-10 transition-all">
           <label className="text-[13px] font-semibold text-gray-700 ml-1">
-            Password
+            {t("password")}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#E86F24]">
@@ -145,7 +147,7 @@ export default function SignUpForm({
 
         <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2">
           <label className="text-[13px] font-semibold text-gray-700 ml-1">
-            Confirm Password
+            {t("confirmPassword")}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#E86F24]">
@@ -183,23 +185,23 @@ export default function SignUpForm({
             {isLoading ? (
               <>
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Creating Account...
+                {t("creatingAccount")}
               </>
             ) : (
-              "Create Account"
+              t("createAccount")
             )}
           </button>
         </div>
       </form>
 
       <p className="mt-10 text-[14px] text-gray-400 transition-all text-center pb-2">
-        Already have an account?{" "}
+        {t("alreadyHaveAccount")}{" "}
         <button
           type="button"
           onClick={onSignIn}
           className="text-[#E86F24] font-bold hover:underline ml-1"
         >
-          Sign In
+          {t("signIn")}
         </button>
       </p>
     </div>

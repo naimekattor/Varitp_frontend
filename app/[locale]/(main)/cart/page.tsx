@@ -2,11 +2,12 @@
 import Image from 'next/image';
 import { ShoppingCart as CartIcon, Trash2, ArrowLeft } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Link, useRouter } from '@/src/i18n/navigation';
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 export default function ShoppingCartPage() {
+  const t = useTranslations();
   const items = useCartStore((state) => state.items);
   const removeItem = useCartStore((state) => state.removeItem);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
@@ -64,13 +65,13 @@ export default function ShoppingCartPage() {
         <div className="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center mb-6 text-[#E86F24]">
           <CartIcon size={40} />
         </div>
-        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">Your cart is empty</h2>
-        <p className="text-gray-500 mb-8 max-w-sm">Looks like you haven't added anything to your cart yet. Browse our menu to find something delicious!</p>
+        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">{t("Cart.emptyTitle")}</h2>
+        <p className="text-gray-500 mb-8 max-w-sm">{t("Cart.emptyText")}</p>
         <Link 
           href="/"
           className="bg-[#E86F24] hover:bg-[#d4621c] text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg hover:shadow-orange-200"
         >
-          Explore Menu
+          {t("Common.exploreMenu")}
         </Link>
       </div>
     );
@@ -82,9 +83,9 @@ export default function ShoppingCartPage() {
       <div className="bg-gradient-to-b from-[#FFF5F0]/60 to-white pt-32 pb-12">
         <div className="w-full max-w-[1400px] mx-auto px-6">
           <div className="text-[13px] font-medium mb-6 text-gray-400">
-            <Link href="/" className="hover:text-gray-700 transition-colors">Home</Link> / <span className="text-[#E86F24]">Cart</span>
+            <Link href="/" className="hover:text-gray-700 transition-colors">{t("Common.home")}</Link> / <span className="text-[#E86F24]">{t("Common.cart")}</span>
           </div>
-          <h1 className="text-4xl md:text-[2.75rem] font-serif font-bold text-gray-900 tracking-tight">Your Shopping Cart</h1>
+          <h1 className="text-4xl md:text-[2.75rem] font-serif font-bold text-gray-900 tracking-tight">{t("Cart.title")}</h1>
         </div>
       </div>
 
@@ -141,7 +142,7 @@ export default function ShoppingCartPage() {
 
                     <div className="text-right">
                       <div className="text-2xl font-bold text-[#E86F24] mb-1">${(item.price * item.quantity).toFixed(2)}</div>
-                      <div className="text-[11px] text-gray-400 font-medium">${item.price.toFixed(2)} each</div>
+                      <div className="text-[11px] text-gray-400 font-medium">${item.price.toFixed(2)} {t("Cart.each")}</div>
                     </div>
                   </div>
                 </div>
@@ -151,11 +152,11 @@ export default function ShoppingCartPage() {
 
           {/* Sidebar */}
           <div className="w-full lg:w-[40%] bg-white border border-gray-100 rounded-[2.5rem] p-10 sticky top-32 shadow-[0_20px_50px_rgba(0,0,0,0.05)]">
-            <h2 className="text-2xl font-serif font-bold text-gray-900 mb-10 tracking-tight">Order Summary</h2>
+            <h2 className="text-2xl font-serif font-bold text-gray-900 mb-10 tracking-tight">{t("Cart.orderSummary")}</h2>
 
             <div className="space-y-5 mb-10 pb-10 border-b border-gray-100">
               <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-500 font-medium">Subtotal</span>
+                <span className="text-gray-500 font-medium">{t("Common.subtotal")}</span>
                 <span className="text-gray-900 font-bold">${subtotal.toFixed(2)}</span>
               </div>
               
@@ -163,7 +164,7 @@ export default function ShoppingCartPage() {
               {charges.map((charge) => (
                 <div key={charge.name} className="flex justify-between items-center text-sm">
                   <span className="text-gray-500 font-medium capitalize">
-                    {charge.name === 'delivery_fee' ? 'Delivery Fee' : charge.name}
+                    {charge.name === 'delivery_fee' ? t("Common.deliveryFee") : charge.name}
                   </span>
                   <span className="text-gray-900 font-bold">${parseFloat(charge.value).toFixed(2)}</span>
                 </div>
@@ -172,7 +173,7 @@ export default function ShoppingCartPage() {
               {/* Display Coupon Discount */}
               {coupon && (
                 <div className="flex justify-between items-center text-sm text-green-600">
-                  <span className="font-medium">Coupon ({coupon.code})</span>
+                  <span className="font-medium">{t("Common.coupon")} ({coupon.code})</span>
                   <span className="font-bold">-${parseFloat(coupon.discount_value).toFixed(2)}</span>
                 </div>
               )}
@@ -183,7 +184,7 @@ export default function ShoppingCartPage() {
               <div className="mb-8 flex gap-2">
                 <input 
                   type="text" 
-                  placeholder="Promo code" 
+                  placeholder={t("Common.promoCode")} 
                   value={couponInput}
                   onChange={(e) => setCouponInput(e.target.value)}
                   className="flex-1 px-4 py-3 rounded-lg border border-gray-100 bg-gray-50/30 outline-none focus:bg-white focus:border-[#E86F24] transition-all text-sm"
@@ -195,27 +196,27 @@ export default function ShoppingCartPage() {
                   disabled={isApplyingCoupon}
                   className="px-6 py-3 bg-black hover:bg-gray-800 text-white rounded-lg font-bold transition-all text-sm disabled:opacity-50"
                 >
-                  {isApplyingCoupon ? 'Applying...' : 'Apply'}
+                  {isApplyingCoupon ? t("Common.applying") : t("Common.apply")}
                 </button>
               </div>
             )}
 
             {coupon && (
               <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
-                <span className="text-sm font-medium text-green-700">Coupon <strong>{coupon.code}</strong> applied!</span>
+                <span className="text-sm font-medium text-green-700">{t("Common.coupon")} <strong>{coupon.code}</strong> {t("Cart.applied")}</span>
                 <button 
                   type="button"
                   onClick={handleRemoveCoupon}
                   disabled={isApplyingCoupon}
                   className="text-xs text-green-600 hover:text-green-700 font-bold"
                 >
-                  Remove
+                  {t("Common.remove")}
                 </button>
               </div>
             )}
 
             <div className="flex justify-between items-end mb-12">
-              <span className="text-lg font-bold text-gray-900">Total Amount</span>
+              <span className="text-lg font-bold text-gray-900">{t("Common.totalAmount")}</span>
               <div className="text-right">
                 <span className="text-4xl font-bold text-[#E86F24] tracking-tight block">${finalAmount.toFixed(2)}</span>
               </div>
@@ -226,13 +227,13 @@ export default function ShoppingCartPage() {
                 onClick={() => router.push('/checkout')}
                 className="w-full bg-[#E86F24] hover:bg-[#d4621c] text-white py-5 rounded-2xl font-bold transition-all shadow-[0_15px_30px_-5px_rgba(232,111,36,0.3)] hover:shadow-[0_20px_40px_-5px_rgba(232,111,36,0.4)] active:scale-[0.98] text-[15px]"
               >
-                Proceed to Checkout
+                {t("Cart.proceed")}
               </button>
               <Link
                 href="/"
                 className="w-full bg-white text-gray-500 hover:text-[#E86F24] py-5 rounded-2xl font-bold transition-all text-[15px] border border-gray-100 hover:border-orange-100 flex items-center justify-center gap-2"
               >
-                <ArrowLeft size={18} /> Continue Shopping
+                <ArrowLeft size={18} /> {t("Common.continueShopping")}
               </Link>
             </div>
           </div>

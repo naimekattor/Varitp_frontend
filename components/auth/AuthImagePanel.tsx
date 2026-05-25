@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
 import { AuthViewState } from "./types";
+import { useTranslations } from "next-intl";
 
 const signInImage = "/images/GOJ_3289.jpg";
 const signUpImage = "/images/GOJ_7329.jpg";
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function AuthImagePanel({ viewState }: Props) {
+  const t = useTranslations("Auth");
   const isSignIn = viewState === "signin";
   const isSignUp = viewState === "signup";
   const isForgotPassword = viewState === "forgot-password";
@@ -101,12 +103,11 @@ export default function AuthImagePanel({ viewState }: Props) {
             fill="currentColor"
           />
           <h2 className="text-4xl lg:text-5xl font-serif font-bold text-white leading-[1.1] relative">
-            Fresh, traditional dishes <br />
-            <span className="text-[#E86F24] italic">prepared</span> daily
+            {t("panelTitle1")} <br />
+            <span className="text-[#E86F24] italic">{t("panelTitle2")}</span> {t("panelTitle3")}
           </h2>
           <p className="text-white/60 mt-6 text-sm max-w-[280px] leading-relaxed">
-            Experience the authentic taste of Varivo bistro, where every meal is
-            a celebration of tradition.
+            {t("panelText")}
           </p>
           <Sparkles
             className="absolute -bottom-4 right-0 text-white opacity-40"

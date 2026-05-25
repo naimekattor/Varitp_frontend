@@ -1,17 +1,20 @@
 "use client";
 
 import { useState } from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import { Menu, UtensilsCrossed, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import logo from "@/public/images/Varivo_LOGO_RGB_boja.png"; 
+import { Link, usePathname, useRouter } from '@/src/i18n/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { useSession, signOut } from 'next-auth/react';
 import { useCartStore } from '@/store/useCartStore';
 import { useEffect } from 'react';
 
 export default function Header() {
+  const t = useTranslations("Header");
+  const locale = useLocale();
+  const router = useRouter();
   const { data: session } = useSession();
   const totalItems = useCartStore((state) => state.totalItems);
   const fetchCart = useCartStore((state) => state.fetchCart);
@@ -24,6 +27,11 @@ export default function Header() {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const locales = ["hr", "en"] as const;
+
+  const switchLocale = (nextLocale: "hr" | "en") => {
+    router.replace(pathname, { locale: nextLocale });
+  };
 
   const isItemActive = (href: string, activePaths?: string[]) => {
     if (activePaths) {
@@ -33,19 +41,45 @@ export default function Header() {
   };
 
   const navItems = [
-    { href: '/', label: 'Menu' },
-    { href: '/cart', label: 'Shopping cart' },
-    { href: '/review', label: 'Review' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/', label: t('menu') },
+    { href: '/cart', label: t('cart') },
+    { href: '/review', label: t('review') },
+    { href: '/contact', label: t('contact') },
     ...(session 
       ? [
-          { href: '/orders', label: 'My Orders' },
-          { href: '/', label: 'Logout', onClick: () => signOut({ callbackUrl: '/' }) }
+          { href: '/orders', label: t('orders') },
+          { href: '/', label: t('logout'), onClick: () => signOut({ callbackUrl: `/${locale}` }) }
         ]
-      : [{ href: '/auth/register', label: 'Signup', activePaths: ['/auth', '/auth/register', '/auth/login'] }]
+      : [{ href: '/auth/register', label: t('signup'), activePaths: ['/auth', '/auth/register', '/auth/login'] }]
     ),
     
   ];
+
+  const renderLanguageToggle = (mobile = false) => (
+    <div
+      className={`inline-flex items-center rounded-full border border-gray-100 bg-gray-50 p-1 shadow-sm ${mobile ? "w-fit mx-4 mt-4" : ""}`}
+      aria-label={t("language")}
+    >
+      {locales.map((item) => {
+        const active = item === locale;
+        return (
+          <button
+            key={item}
+            type="button"
+            onClick={() => switchLocale(item)}
+            className={`rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${
+              active
+                ? "bg-[#E86F24] text-white shadow-[0_8px_18px_-8px_#E86F24]"
+                : "text-gray-400 hover:text-[#E86F24]"
+            }`}
+            aria-pressed={active}
+          >
+            {item.toUpperCase()}
+          </button>
+        );
+      })}
+    </div>
+  );
 
   return (
     <>
@@ -57,7 +91,7 @@ export default function Header() {
             type="button"
             onClick={() => setIsMobileMenuOpen(true)}
             className="2xl:hidden absolute left-6 top-1/2 -translate-y-1/2 text-gray-900 hover:text-[#E86F24] transition-colors p-2 -ml-2 flex items-center"
-            aria-label="Open mobile menu"
+            aria-label={t("openMenu")}
           >
             <Menu size={30} strokeWidth={1.7} />
           </button>
@@ -103,6 +137,7 @@ export default function Header() {
                 </Link>
               )
             ))}
+            {renderLanguageToggle()}
           </nav>
         </div>
       </header>
@@ -172,6 +207,7 @@ export default function Header() {
                   </Link>
                 )
               ))}
+              {renderLanguageToggle(true)}
             </nav>
           </aside>
         </div>

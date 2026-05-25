@@ -1,14 +1,14 @@
 "use client";
 
 import AuthPage from "@/components/auth/AuthPage";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/src/i18n/navigation";
 
-export default function OtpPage() {
+export default function RegisterPage() {
   const router = useRouter();
   
   return (
     <AuthPage 
-      initialView="otp" 
+      initialView="signup" 
       onBack={() => router.push("/")} 
     />
   );

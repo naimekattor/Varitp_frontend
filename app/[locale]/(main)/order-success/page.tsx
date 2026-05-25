@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import { Link } from "@/src/i18n/navigation";
 import { Check, MapPin, Phone, ArrowLeft } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/src/i18n/navigation";
 import { useEffect } from "react";
 
 export default function OrderSuccessPage() {

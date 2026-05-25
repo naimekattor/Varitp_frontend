@@ -1,14 +1,14 @@
 "use client";
 
 import AuthPage from "@/components/auth/AuthPage";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/src/i18n/navigation";
 
-export default function LoginPage() {
+export default function ForgotPasswordPage() {
   const router = useRouter();
   
   return (
     <AuthPage 
-      initialView="signin" 
+      initialView="forgot-password" 
       onBack={() => router.push("/")} 
     />
   );

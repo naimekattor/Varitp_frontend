@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Star, ThumbsUp, Loader2 } from 'lucide-react';
 import api from '@/lib/api';
+import { useTranslations } from 'next-intl';
 
 type Review = {
   id: string;
@@ -16,6 +17,7 @@ type Review = {
 };
 
 export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string) => void }) {
+  const t = useTranslations();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -47,7 +49,7 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
     setStatus({ type: null, message: null });
 
     if (!formData.name || !formData.email || !formData.review) {
-      setStatus({ type: 'warning', message: 'Please fill in all required fields.' });
+      setStatus({ type: 'warning', message: t("Common.requiredFields") });
       return;
     }
 
@@ -57,11 +59,11 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
       if (response.data) {
         setReviews([response.data, ...reviews]);
         setFormData({ name: '', email: '', rating: 5, review: '' });
-        setStatus({ type: 'success', message: 'Review Submitted! Thank you for your feedback.' });
+        setStatus({ type: 'success', message: t("Reviews.submitted") });
       }
     } catch (error) {
       console.error('Failed to submit review:', error);
-      setStatus({ type: 'error', message: 'Submission Failed. Something went wrong. Please try again later.' });
+      setStatus({ type: 'error', message: t("Reviews.failed") });
     } finally {
       setSubmitting(false);
     }
@@ -97,8 +99,8 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
       {/* Hero Section */}
       <div className="bg-gradient-to-b from-[#FFF5F0]/60 to-white pt-24 pb-16">
         <div className="text-center max-w-2xl mx-auto px-6">
-          <p className="text-[#E86F24] font-semibold text-[11px] mb-4 tracking-widest uppercase">Customer Reviews</p>
-          <h1 className="text-4xl md:text-5xl font-serif text-gray-900 mb-6 tracking-tight font-medium">What Our Customers Say</h1>
+          <p className="text-[#E86F24] font-semibold text-[11px] mb-4 tracking-widest uppercase">{t("Reviews.eyebrow")}</p>
+          <h1 className="text-4xl md:text-5xl font-serif text-gray-900 mb-6 tracking-tight font-medium">{t("Reviews.title")}</h1>
 
           <div className="flex items-center justify-center gap-4">
             <div className="flex text-[#FFC107] gap-1">
@@ -108,7 +110,7 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[18px] font-semibold text-gray-900">{avgRating}</span>
-              <span className="text-[12px] text-gray-400 font-medium">({reviews.length} reviews)</span>
+              <span className="text-[12px] text-gray-400 font-medium">{t("Reviews.count", {count: reviews.length})}</span>
             </div>
           </div>
         </div>
@@ -124,7 +126,7 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
               </div>
             ) : reviews.length === 0 ? (
               <div className="text-center py-20 text-gray-500">
-                No reviews yet. Be the first to leave one!
+                {t("Reviews.empty")}
               </div>
             ) : (
               reviews.map((review) => (
@@ -162,7 +164,7 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
                     className={`flex items-center gap-1.5 transition-colors cursor-pointer w-fit ${review.is_like ? 'text-[#E86F24]' : 'text-gray-400 hover:text-gray-700'}`}
                   >
                      <ThumbsUp size={14} strokeWidth={2} fill={review.is_like ? "currentColor" : "none"} />
-                     <span className="text-[11px] font-medium">Helpful ({review.likes})</span>
+                     <span className="text-[11px] font-medium">{t("Reviews.helpful", {likes: review.likes})}</span>
                   </button>
                 </div>
               ))
@@ -171,11 +173,11 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
 
           {/* Leave a Review Form */}
           <div className="w-full lg:w-[35%] bg-[#FAF9F8] border border-gray-100 rounded-[1.5rem] p-8 sticky top-8 shadow-sm">
-             <h2 className="text-[1.25rem] font-serif font-medium text-gray-900 mb-6">Leave a Review</h2>
+             <h2 className="text-[1.25rem] font-serif font-medium text-gray-900 mb-6">{t("Reviews.leave")}</h2>
 
              <form className="space-y-5" onSubmit={handleSubmit}>
                <div className="space-y-1.5">
-                 <label className="text-[11px] font-bold text-gray-800">Your Name *</label>
+                 <label className="text-[11px] font-bold text-gray-800">{t("Common.yourName")}</label>
                  <input 
                    type="text" 
                    required
@@ -186,7 +188,7 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
                </div>
 
                <div className="space-y-1.5">
-                 <label className="text-[11px] font-bold text-gray-800">Email Address *</label>
+                 <label className="text-[11px] font-bold text-gray-800">{t("Common.emailAddress")} *</label>
                  <input 
                    type="email" 
                    required
@@ -197,7 +199,7 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
                </div>
 
                <div className="space-y-2">
-                 <label className="text-[11px] font-bold text-gray-800">Rating *</label>
+                 <label className="text-[11px] font-bold text-gray-800">{t("Reviews.rating")}</label>
                  <div className="flex text-[#FFC107] gap-1.5">
                    {[1, 2, 3, 4, 5].map((star) => (
                      <Star 
@@ -213,13 +215,13 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
                </div>
 
                <div className="space-y-1.5">
-                 <label className="text-[11px] font-bold text-gray-800">Your Review *</label>
+                 <label className="text-[11px] font-bold text-gray-800">{t("Reviews.review")}</label>
                  <textarea
                    rows={4}
                    required
                    value={formData.review}
                    onChange={(e) => setFormData({...formData, review: e.target.value})}
-                   placeholder="Share your experience..."
+                   placeholder={t("Reviews.placeholder")}
                    className="w-full bg-white px-4 py-3 rounded-xl border border-gray-200/60 outline-none focus:border-[#E86F24] transition-all text-[13px] placeholder:text-gray-300 resize-none"
                  ></textarea>
                </div>
@@ -230,9 +232,9 @@ export default function ReviewPage({ onNavigate }: { onNavigate?: (page: string)
                  className="w-full bg-[#E86F24] hover:bg-[#d4621c] disabled:bg-gray-400 text-white py-3.5 rounded-xl font-medium transition-colors shadow-sm text-[13px] mt-2 flex justify-center items-center gap-2"
                >
                  {submitting ? (
-                   <><Loader2 className="animate-spin" size={16} /> Submitting...</>
-                 ) : (
-                   'Submit a review'
+                   <><Loader2 className="animate-spin" size={16} /> {t("Reviews.submitting")}</>
+                ) : (
+                   t("Reviews.submit")
                  )}
                </button>
 

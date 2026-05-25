@@ -21,7 +21,8 @@ import ForgotPasswordForm from "./ForgotPasswordForm";
 import OtpVerificationForm from "./OtpVerificationForm";
 import ResetPasswordForm from "./ResetPasswordForm";
 import SuccessModal from "./SuccessModal";
-import Link from "next/link";
+import { Link } from "@/src/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 export default function AuthPage({
   onBack,
@@ -30,6 +31,7 @@ export default function AuthPage({
   onBack: () => void;
   initialView?: AuthViewState;
 }) {
+  const t = useTranslations("Auth");
   const [viewState, setViewState] = useState<AuthViewState>(initialView);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -110,19 +112,19 @@ export default function AuthPage({
       if (result?.error) {
         console.error("SignIn error:", result.error);
         if (result.error === "CredentialsSignin") {
-          setError("Invalid email or password.");
+          setError(t("invalidCredentials"));
         } else {
-          setError(result.error || "Authentication failed.");
+          setError(result.error || t("authFailed"));
         }
       } else if (result?.ok) {
         console.log("Sign in successful");
         onBack(); // Redirect home or to dashboard
       } else {
-        setError("Sign in failed. Please try again.");
+        setError(t("signInFailed"));
       }
     } catch (err: any) {
       console.error("Sign in exception:", err);
-      setError("An unexpected error occurred.");
+      setError(t("unexpected"));
     } finally {
       setIsLoading(false);
     }
@@ -152,7 +154,7 @@ export default function AuthPage({
         setViewState("otp");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed.");
+      setError(err.response?.data?.message || t("registrationFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -172,7 +174,7 @@ export default function AuthPage({
         setViewState("otp");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to send reset code.");
+      setError(err.response?.data?.message || t("resetCodeFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -220,12 +222,12 @@ export default function AuthPage({
             setViewState("reset-password");
           } else {
             setViewState("signin");
-            setError("OTP Verified! Please sign in with your new account.");
+            setError(t("otpVerified"));
           }
         }
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "OTP verification failed.");
+      setError(err.response?.data?.message || t("otpFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -240,9 +242,9 @@ export default function AuthPage({
         email,
         task: viewState === "otp" ? "registration" : "password_reset",
       });
-      setError("A new code has been sent to your email.");
+      setError(t("newCodeSent"));
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to resend OTP.");
+      setError(err.response?.data?.message || t("resendFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -251,7 +253,7 @@ export default function AuthPage({
   const handleResetSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (resetPasswordForm.password !== resetPasswordForm.confirmPassword) {
-      setError("Passwords do not match.");
+      setError(t("passwordMismatch"));
       return;
     }
     setIsLoading(true);
@@ -269,7 +271,7 @@ export default function AuthPage({
         setShowSuccess(true);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Password reset failed.");
+      setError(err.response?.data?.message || t("passwordResetFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -331,20 +333,20 @@ export default function AuthPage({
           {/* Heading */}
           <div className="text-center mb-6">
             <h1 className="text-3xl font-serif font-bold text-gray-900 mb-3 tracking-tight">
-              {viewState === "signin" && "Welcome Back"}
-              {viewState === "signup" && "Create Account"}
-              {viewState === "forgot-password" && "Forgot Password?"}
-              {viewState === "otp" && "Please Check Your Email"}
-              {viewState === "reset-password" && "Enter New password"}
+              {viewState === "signin" && t("welcomeBack")}
+              {viewState === "signup" && t("createAccount")}
+              {viewState === "forgot-password" && t("forgotPassword")}
+              {viewState === "otp" && t("checkEmail")}
+              {viewState === "reset-password" && t("newPassword")}
             </h1>
             <p className="text-gray-500 text-sm font-medium">
-              {viewState === "signin" && "Please enter your details to sign in"}
-              {viewState === "signup" && "Join our community of food lovers"}
+              {viewState === "signin" && t("signinSubtitle")}
+              {viewState === "signup" && t("signupSubtitle")}
               {viewState === "forgot-password" &&
-                "Just enter your email to receive password reset instructions"}
+                t("forgotSubtitle")}
               {viewState === "otp" && ""}
               {viewState === "reset-password" &&
-                "Your OTP has been verified, please enter new password."}
+                t("resetSubtitle")}
             </p>
           </div>
 

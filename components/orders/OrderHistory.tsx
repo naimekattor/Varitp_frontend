@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/src/i18n/navigation";
 import { Package, Calendar, Clock, ChevronRight, Loader2, ArrowLeft } from "lucide-react";
 import api from "@/lib/api";
+import { useTranslations } from "next-intl";
 
 interface OrderItem {
   id: string;
@@ -24,6 +25,7 @@ interface Order {
 }
 
 export default function OrderHistory() {
+  const t = useTranslations();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +62,7 @@ export default function OrderHistory() {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
         <Loader2 className="animate-spin text-[#E86F24]" size={40} />
-        <p className="text-gray-400 font-medium">Loading your orders...</p>
+        <p className="text-gray-400 font-medium">{t("Orders.loading")}</p>
       </div>
     );
   }
@@ -71,13 +73,13 @@ export default function OrderHistory() {
         <div className="w-24 h-24 bg-orange-50 rounded-full flex items-center justify-center mb-6 text-[#E86F24]">
           <Package size={40} />
         </div>
-        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">No orders yet</h2>
-        <p className="text-gray-500 mb-8 max-w-sm">It looks like you haven't placed any orders yet. Explore our menu to find something delicious!</p>
+        <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">{t("Orders.emptyTitle")}</h2>
+        <p className="text-gray-500 mb-8 max-w-sm">{t("Orders.emptyText")}</p>
         <Link 
           href="/"
           className="bg-[#E86F24] hover:bg-[#d4621c] text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg"
         >
-          Browse Menu
+          {t("Common.browseMenu")}
         </Link>
       </div>
     );
@@ -88,9 +90,9 @@ export default function OrderHistory() {
       <div className="bg-gradient-to-b from-[#FFF5F0]/60 to-white pt-32 pb-12">
         <div className="w-full max-w-[1200px] mx-auto px-6">
           <div className="text-[13px] font-medium mb-6 text-gray-400">
-            <Link href="/" className="hover:text-gray-700 transition-colors">Home</Link> / <span className="text-[#E86F24]">Order History</span>
+            <Link href="/" className="hover:text-gray-700 transition-colors">{t("Common.home")}</Link> / <span className="text-[#E86F24]">{t("Orders.history")}</span>
           </div>
-          <h1 className="text-4xl md:text-[2.75rem] font-serif font-bold text-gray-900 tracking-tight">Order History</h1>
+          <h1 className="text-4xl md:text-[2.75rem] font-serif font-bold text-gray-900 tracking-tight">{t("Orders.history")}</h1>
         </div>
       </div>
 
@@ -128,14 +130,14 @@ export default function OrderHistory() {
                     {order.status}
                   </span>
                   <span className="px-4 py-1.5 rounded-full text-[12px] font-bold bg-gray-50 text-gray-600 border border-gray-100 uppercase tracking-wider">
-                    {order.order_items.length} {order.order_items.length === 1 ? 'Item' : 'Items'}
+                    {order.order_items.length} {order.order_items.length === 1 ? t("Orders.item") : t("Orders.items")}
                   </span>
                 </div>
               </div>
 
               <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-4 pt-6 md:pt-0 border-t md:border-t-0 border-gray-50">
                 <div className="text-right">
-                  <p className="text-[12px] text-gray-400 font-bold uppercase tracking-widest mb-1">Total Amount</p>
+                  <p className="text-[12px] text-gray-400 font-bold uppercase tracking-widest mb-1">{t("Orders.totalAmount")}</p>
                   <p className="text-2xl font-bold text-[#E86F24] leading-none">${parseFloat(order.total_amount).toFixed(2)}</p>
                 </div>
               </div>
@@ -149,7 +151,7 @@ export default function OrderHistory() {
             className="inline-flex items-center gap-2 text-gray-500 hover:text-[#E86F24] font-bold transition-all"
           >
             <ArrowLeft size={18} />
-            Back to Menu
+            {t("Common.backToMenu")}
           </Link>
         </div>
       </main>

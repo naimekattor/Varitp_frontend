@@ -8,6 +8,7 @@ import { useMenuStore } from "@/store/useMenuStore";
 import { useSession } from "next-auth/react";
 import MenuSkeleton from "./MenuSkeleton";
 import LoginRequiredModal from "../auth/LoginRequiredModal";
+import { useTranslations } from "next-intl";
 
 // Fallback images from public/images folder
 const heroImageFallback = "/images/GOJ_3134.jpg";
@@ -34,6 +35,7 @@ export default function LandingPage({
 }: {
   onNavigate: (page: string) => void;
 }) {
+  const t = useTranslations("Home");
   const { data: session } = useSession();
   const addItem = useCartStore((state) => state.addItem);
   const { 
@@ -136,21 +138,20 @@ export default function LandingPage({
         {/* Left Content */}
         <div className="w-full xl:w-[45%] xl:pr-12 z-10 text-center xl:text-left">
           <p className="text-[#E86F24] font-semibold text-sm mb-4 tracking-wide font-sans">
-            Get Your best food here!
+            {t("eyebrow")}
           </p>
           <h1 className="text-5xl sm:text-6xl xl:text-[5rem] font-serif leading-[1.1] text-gray-900 mb-6 font-medium">
-            Welcome to the <br className="hidden lg:block" /> Varivo bistro!
+            {t("title")}
           </h1>
           <p className="text-gray-500/90 text-lg md:text-[1.1rem] max-w-md mx-auto xl:mx-0 mb-10 leading-relaxed">
-            Fresh, traditional dishes prepared daily and delivered straight to
-            your doorstep.
+            {t("subtitle")}
           </p>
           <button
             type="button"
             onClick={() => onNavigate("cart")}
             className="bg-[#E86F24] mb-6 hover:bg-[#d4621c] text-white px-10 py-4 lg:py-5 rounded-2xl font-medium transition-colors shadow-[0_10px_25px_-5px_#E86F24] hover:shadow-[0_15px_30px_-5px_#E86F24] text-[15px]"
           >
-            Order Now
+            {t("orderNow")}
           </button>
         </div>
 
@@ -200,7 +201,7 @@ export default function LandingPage({
             type="button"
             onClick={() => changeDate(-1)}
             className="hover:text-[#E86F24] transition-colors"
-            aria-label="Show previous date"
+            aria-label={t("previousDate")}
           >
             <ChevronLeft size={24} strokeWidth={1.5} />
           </button>
@@ -226,7 +227,7 @@ export default function LandingPage({
             type="button"
             onClick={() => changeDate(1)}
             className="hover:text-[#E86F24] transition-colors"
-            aria-label="Show next date"
+            aria-label={t("nextDate")}
           >
             <ChevronRight size={24} strokeWidth={1.5} />
           </button>
@@ -274,13 +275,13 @@ export default function LandingPage({
             </div>
             <div>
               <p className="text-gray-900 font-bold text-xl mb-2">{error}</p>
-              <p className="text-gray-400 text-sm">We encountered an issue loading the menu. Please try again.</p>
+              <p className="text-gray-400 text-sm">{t("menuLoadIssue")}</p>
             </div>
             <button 
               onClick={() => fetchMenu(selectedDate)} 
               className="bg-[#E86F24] text-white px-8 py-3 rounded-2xl font-bold hover:bg-[#d4621c] transition-all active:scale-95 shadow-lg"
             >
-              Try again
+              {t("tryAgain")}
             </button>
           </div>
         ) : (!selectedMenu || error === "Menu items not found") ? (
@@ -294,17 +295,17 @@ export default function LandingPage({
             </div>
             
             <h3 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 mb-4 tracking-tight">
-              Menu is not cooked yet for this date
+              {t("menuNotReadyTitle")}
             </h3>
             <p className="text-gray-400 text-sm md:text-base max-w-sm mx-auto leading-relaxed mb-10">
-              Our chefs are still preparing the perfect selection for this day. Please check back later or explore other dates.
+              {t("menuNotReadyText")}
             </p>
             
             <button
               onClick={() => setSelectedDate(new Date().toISOString().split("T")[0])}
               className="bg-white border-2 border-gray-100 hover:border-[#E86F24] hover:text-[#E86F24] text-gray-500 px-8 py-3.5 rounded-2xl font-bold transition-all active:scale-95 shadow-sm"
             >
-              Check Today&apos;s Menu
+              {t("checkToday")}
             </button>
           </div>
         ) : (
@@ -325,7 +326,7 @@ export default function LandingPage({
                 onClick={handleAddToCart}
                 className="bg-[#E86F24] hover:bg-[#d4621c] text-white px-7 py-3 rounded-full font-medium transition-all shadow-[0_8px_20px_-5px_#E86F24] text-[15px] flex items-center gap-2.5"
               >
-                <ShoppingCart size={18} /> Add to cart
+                <ShoppingCart size={18} /> {t("addToCart")}
               </button>
             </div>
 
@@ -422,7 +423,7 @@ export default function LandingPage({
       {selectedMenu && (
         <section className="px-6 pb-20 pt-16 max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-12 text-center font-medium">
-            Ingredients
+            {t("ingredients")}
           </h2>
           <div className="bg-gray-50 rounded-3xl p-8 md:p-12">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 md:gap-8">
@@ -450,7 +451,7 @@ export default function LandingPage({
       {selectedMenu && (
         <section className="px-6 pb-32 pt-16 max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-serif text-gray-900 mb-12 text-center font-medium">
-            Nutrition
+            {t("nutrition")}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
             {[
@@ -483,22 +484,25 @@ export default function LandingPage({
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.28)_0%,rgba(0,0,0,0.36)_55%,rgba(0,0,0,0.42)_100%)]"></div>
         <div className="relative z-10 text-center px-6 max-w-[760px] mx-auto py-14 md:py-16">
           <h2 className="text-[2.4rem] md:text-[3.1rem] font-serif text-white mb-6 tracking-tight leading-[1.02]">
-            Ready to enjoy
-            <br />
-            your meal?
+            {t("ctaTitle").split("\n").map((line, index) => (
+              <span key={line}>
+                {index > 0 && <br />}
+                {line}
+              </span>
+            ))}
           </h2>
           <div className="flex flex-col sm:flex-row flex-wrap justify-center items-center gap-x-10 gap-y-3 mb-7 text-[13px] md:text-[14px] text-white/90 font-medium">
             <div className="flex items-center gap-1.5">
               <Check size={14} strokeWidth={3} className="text-white" />{" "}
-              <span>Fresh ingredients</span>
+              <span>{t("freshIngredients")}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Check size={14} strokeWidth={3} className="text-white" />{" "}
-              <span>Ready in 10 mins</span>
+              <span>{t("readyIn")}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Check size={14} strokeWidth={3} className="text-white" />{" "}
-              <span>Delivered daily</span>
+              <span>{t("deliveredDaily")}</span>
             </div>
           </div>
           <button
@@ -506,7 +510,7 @@ export default function LandingPage({
             onClick={() => onNavigate("cart")}
             className="bg-[#E86F24] hover:bg-[#d4621c] text-white px-6 py-3 rounded-lg font-semibold shadow-[0_10px_24px_-8px_#E86F24] text-[14px]"
           >
-            Select Meal
+            {t("selectMeal")}
           </button>
         </div>
       </section>

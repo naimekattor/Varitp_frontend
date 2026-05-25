@@ -34,6 +34,7 @@ export const authOptions: NextAuthOptions = {
               headers: {
                 "Content-Type": "application/json",
                 "ngrok-skip-browser-warning": "any",
+                "Accept-Language": "hr",
               },
               timeout: 10000,
             }

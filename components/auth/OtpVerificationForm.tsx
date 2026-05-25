@@ -1,5 +1,6 @@
 import OtpInput from "./OtpInput";
 import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Props {
   otpDigits: string[];
@@ -27,6 +28,7 @@ export default function OtpVerificationForm({
   onSignUp,
   isLoading,
 }: Props) {
+  const t = useTranslations("Auth");
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-top-2 w-full pt-2 duration-500">
       <div className="bg-[#FFF2E8] border-none rounded-2xl p-5 flex gap-4 items-center justify-center text-left shadow-sm">
@@ -34,8 +36,7 @@ export default function OtpVerificationForm({
           !
         </div>
         <p className="text-[13px] text-[#E86F24] font-medium leading-relaxed">
-          We have sent you an OTP on your email address, please enter it here to
-          reset the password.
+          {t("otpInfo")}
         </p>
       </div>
 
@@ -58,10 +59,10 @@ export default function OtpVerificationForm({
             {isLoading ? (
               <>
                 <Loader2 size={18} className="animate-spin" />
-                Verifying...
+                {t("verifying")}
               </>
             ) : (
-              "Verify"
+              t("verify")
             )}
           </button>
 
@@ -72,22 +73,22 @@ export default function OtpVerificationForm({
               disabled={isLoading}
               className="text-[13px] text-gray-400 hover:text-[#E86F24] font-semibold transition-colors disabled:opacity-50"
             >
-              Didn't receive the code? <span className="text-[#E86F24] ml-1 hover:underline">Resend Code</span>
+              {t("didntReceive")} <span className="text-[#E86F24] ml-1 hover:underline">{t("resendCode")}</span>
             </button>
           </div>
         </div>
       </form>
 
       <p className="mt-14 text-[14px] text-gray-400 transition-all text-center pb-2">
-        Don't have an account?{" "}
+        {t("dontHaveAccount")}{" "}
         <button
           type="button"
           onClick={onSignUp}
           className="text-[#E86F24] font-bold hover:underline ml-1"
         >
-          Create Account
+          {t("createAccount")}
         </button>
       </p>
     </div>
   );
-}
+}

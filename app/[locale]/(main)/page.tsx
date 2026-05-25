@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/src/i18n/navigation";
 import LandingPage from "@/components/home/LandingPage";
 import { AuthViewState } from "@/components/auth/AuthPage";
 

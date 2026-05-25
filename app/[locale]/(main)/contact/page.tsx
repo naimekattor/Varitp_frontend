@@ -2,8 +2,10 @@
 import { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Loader2 } from 'lucide-react';
 import api from '@/lib/api';
+import { useTranslations } from 'next-intl';
 
 export default function ContactPage() {
+  const t = useTranslations();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,7 +21,7 @@ export default function ContactPage() {
     setStatus({ type: null, message: null });
 
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-      setStatus({ type: 'warning', message: 'Please fill in all required fields.' });
+      setStatus({ type: 'warning', message: t("Common.requiredFields") });
       return;
     }
 
@@ -27,10 +29,10 @@ export default function ContactPage() {
     try {
       await api.post('/other/api/v1/support-messages/', formData);
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-      setStatus({ type: 'success', message: 'Message Sent! We will get back to you shortly.' });
+      setStatus({ type: 'success', message: t("Contact.sent") });
     } catch (error) {
       console.error('Failed to send message:', error);
-      setStatus({ type: 'error', message: 'Failed to Send. Something went wrong. Please try again later.' });
+      setStatus({ type: 'error', message: t("Contact.failed") });
     } finally {
       setSubmitting(false);
     }
@@ -41,10 +43,10 @@ export default function ContactPage() {
       {/* Hero Section */}
       <div className="bg-gradient-to-b from-[#FFF5F0]/60 to-white pt-24 pb-16">
         <div className="text-center max-w-2xl mx-auto px-6">
-          <p className="text-[#E86F24] font-semibold text-[11px] mb-4 tracking-widest uppercase">Get in touch</p>
-          <h1 className="text-4xl md:text-5xl font-serif text-gray-900 mb-6 tracking-tight font-medium">Contact Us</h1>
+          <p className="text-[#E86F24] font-semibold text-[11px] mb-4 tracking-widest uppercase">{t("Contact.eyebrow")}</p>
+          <h1 className="text-4xl md:text-5xl font-serif text-gray-900 mb-6 tracking-tight font-medium">{t("Contact.title")}</h1>
           <p className="text-gray-400 text-[14px] max-w-md mx-auto leading-relaxed">
-            Have a question or feedback? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
+            {t("Contact.intro")}
           </p>
         </div>
       </div>
@@ -61,7 +63,7 @@ export default function ContactPage() {
                   <MapPin size={22} strokeWidth={1.5} />
                 </div>
                 <div className="pt-1">
-                  <h4 className="text-[14px] font-semibold text-gray-900 mb-1.5 font-sans">Our Location</h4>
+                  <h4 className="text-[14px] font-semibold text-gray-900 mb-1.5 font-sans">{t("Contact.location")}</h4>
                   <p className="text-[13px] text-gray-500 leading-relaxed font-light">Koledinecka 94, 10410<br/>Velika Gorica<br/>Croatia</p>
                 </div>
               </div>
@@ -72,7 +74,7 @@ export default function ContactPage() {
                   <Phone size={22} strokeWidth={1.5} />
                 </div>
                 <div className="pt-1">
-                  <h4 className="text-[14px] font-semibold text-gray-900 mb-1.5 font-sans">Phone Number</h4>
+                  <h4 className="text-[14px] font-semibold text-gray-900 mb-1.5 font-sans">{t("Contact.phone")}</h4>
                   <p className="text-[13px] text-gray-500 leading-relaxed font-light">+385 1 5504 242<br/>+1 (555) 987-6543</p>
                 </div>
               </div>
@@ -83,7 +85,7 @@ export default function ContactPage() {
                   <Mail size={22} strokeWidth={1.5} />
                 </div>
                 <div className="pt-1">
-                  <h4 className="text-[14px] font-semibold text-gray-900 mb-1.5 font-sans">Email Address</h4>
+                  <h4 className="text-[14px] font-semibold text-gray-900 mb-1.5 font-sans">{t("Contact.email")}</h4>
                   <p className="text-[13px] text-gray-500 leading-relaxed font-light">info@varivo.hr<br/>support@varivobistro.com</p>
                 </div>
               </div>
@@ -94,7 +96,7 @@ export default function ContactPage() {
                   <Clock size={22} strokeWidth={1.5} />
                 </div>
                 <div className="pt-1">
-                  <h4 className="text-[14px] font-semibold text-gray-900 mb-1.5 font-sans">Business Hours</h4>
+                  <h4 className="text-[14px] font-semibold text-gray-900 mb-1.5 font-sans">{t("Contact.hours")}</h4>
                   <p className="text-[13px] text-gray-500 leading-relaxed font-light">Mon - Fri: 08:30 - 22:00<br/>Sat: 10:00 - 23:00<br/>Sun: 10:00 - 21:00</p>
                 </div>
               </div>
@@ -120,12 +122,12 @@ export default function ContactPage() {
 
           {/* Right Column - Form */}
           <div className="w-full bg-white border border-gray-100 rounded-[2rem] p-8 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
-             <h2 className="text-[1.35rem] font-serif font-medium text-gray-900 mb-8">Send Us a Message</h2>
+             <h2 className="text-[1.35rem] font-serif font-medium text-gray-900 mb-8">{t("Contact.sendTitle")}</h2>
              
              <form className="space-y-6" onSubmit={handleSubmit}>
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                   <label htmlFor="name" className="text-[12px] font-bold text-gray-800">Your Name *</label>
+                   <label htmlFor="name" className="text-[12px] font-bold text-gray-800">{t("Common.yourName")}</label>
                    <input 
                      type="text" 
                      id="name" 
@@ -137,7 +139,7 @@ export default function ContactPage() {
                    />
                  </div>
                  <div className="space-y-2">
-                   <label htmlFor="email" className="text-[12px] font-bold text-gray-800">Email Address *</label>
+                   <label htmlFor="email" className="text-[12px] font-bold text-gray-800">{t("Common.emailAddress")} *</label>
                    <input 
                      type="email" 
                      id="email" 
@@ -152,7 +154,7 @@ export default function ContactPage() {
 
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                   <label htmlFor="phone" className="text-[12px] font-bold text-gray-800">Phone Number</label>
+                   <label htmlFor="phone" className="text-[12px] font-bold text-gray-800">{t("Common.phoneNumber")}</label>
                    <input 
                      type="tel" 
                      id="phone" 
@@ -163,7 +165,7 @@ export default function ContactPage() {
                    />
                  </div>
                  <div className="space-y-2">
-                   <label htmlFor="subject" className="text-[12px] font-bold text-gray-800">Subject *</label>
+                   <label htmlFor="subject" className="text-[12px] font-bold text-gray-800">{t("Contact.subject")}</label>
                    <input 
                      type="text" 
                      id="subject" 
@@ -176,14 +178,14 @@ export default function ContactPage() {
                </div>
 
                <div className="space-y-2">
-                 <label htmlFor="message" className="text-[12px] font-bold text-gray-800">Your Message *</label>
+                 <label htmlFor="message" className="text-[12px] font-bold text-gray-800">{t("Contact.message")}</label>
                  <textarea 
                    id="message"
                    rows={6}
                    required
                    value={formData.message}
                    onChange={(e) => setFormData({...formData, message: e.target.value})}
-                   placeholder="Tell us more about your inquiry..." 
+                   placeholder={t("Contact.messagePlaceholder")} 
                    className="w-full bg-white px-5 py-4 rounded-xl border border-gray-200/60 outline-none focus:border-[#E86F24] transition-all text-[13px] placeholder:text-gray-400 resize-none font-light"
                  ></textarea>
                </div>
@@ -194,9 +196,9 @@ export default function ContactPage() {
                  className="w-full bg-[#E86F24] hover:bg-[#d4621c] disabled:bg-gray-400 text-white py-4 rounded-xl font-medium transition-colors shadow-sm text-[14px] mt-4 flex justify-center items-center gap-2"
                >
                  {submitting ? (
-                   <><Loader2 className="animate-spin" size={16} /> Sending...</>
-                 ) : (
-                   'Send Message'
+                   <><Loader2 className="animate-spin" size={16} /> {t("Common.sending")}</>
+                ) : (
+                   t("Common.sendMessage")
                  )}
                </button>
 
