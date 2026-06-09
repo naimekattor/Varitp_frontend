@@ -8,7 +8,9 @@
     "logout": "Odjava",
     "signup": "Registracija",
     "openMenu": "Otvori mobilni izbornik",
-    "language": "Jezik"
+    "language": "Jezik",
+    "businessAccount": "Poslovni račun",
+    "profile": "Profil"
   },
   "Common": {
     "home": "Početna",
@@ -133,7 +135,39 @@
     "panelTitle1": "Svježa, tradicionalna jela",
     "panelTitle2": "pripremljena",
     "panelTitle3": "svaki dan",
-    "panelText": "Doživite autentičan okus Varivo bistroa, gdje je svaki obrok slavlje tradicije."
+    "panelText": "Doživite autentičan okus Varivo bistroa, gdje je svaki obrok slavlje tradicije.",
+    "roleUser": "Obični korisnik",
+    "roleBusiness": "Vlasnik tvrtke",
+    "businessLocation": "Lokacija tvrtke",
+    "country": "Država",
+    "city": "Grad",
+    "streetAddress": "Ulica i kućni broj",
+    "postalCode": "Poštanski broj",
+    "contactPerson": "Osoba za kontakt / Voditelj",
+    "contactName": "Ime kontakt osobe",
+    "contactEmail": "E-mail kontakt osobe",
+    "contactPhone": "Telefon kontakt osobe",
+    "businessInfo": "Informacije o tvrtki",
+    "companyName": "Naziv tvrtke / obrta",
+    "oib": "OIB / Porezni broj",
+    "website": "Web stranica",
+    "businessDescription": "Opis tvrtke",
+    "businessAccountBadge": "Poslovni račun",
+    "oibPlaceholder": "Unesite OIB / Porezni broj",
+    "websitePlaceholder": "npr., https://primjer.hr",
+    "descriptionPlaceholder": "Opišite svoju tvrtku...",
+    "countryPlaceholder": "Unesite državu",
+    "cityPlaceholder": "Unesite grad",
+    "streetPlaceholder": "Unesite ulicu i kućni broj",
+    "postalPlaceholder": "Unesite poštanski broj",
+    "contactNamePlaceholder": "Unesite ime voditelja/kontakta",
+    "contactEmailPlaceholder": "Unesite e-mail za kontakt",
+    "contactPhonePlaceholder": "Unesite telefon za kontakt",
+    "companyPlaceholder": "Unesite naziv tvrtke / obrta",
+    "requiredField": "Ovo polje je obavezno",
+    "invalidEmail": "Neispravna e-mail adresa",
+    "invalidPhone": "Neispravan telefonski broj",
+    "invalidWebsite": "Neispravna web adresa"
   },
   "Cart": {
     "emptyTitle": "Vaša košarica je prazna",
@@ -236,5 +270,16 @@
     "difference": "razliku?",
     "ctaText": "Pridružite se tisućama zadovoljnih ljubitelja hrane koji svaki dan uživaju u Varivu.",
     "explore": "Istražite jelovnik"
+  },
+  "Profile": {
+    "title": "Postavke profila",
+    "subtitle": "Upravljajte svojim računom i podacima o tvrtki",
+    "personalInfo": "Osobni podaci",
+    "saveChanges": "Spremi promjene",
+    "saving": "Spremanje...",
+    "saveSuccess": "Profil je uspješno ažuriran!",
+    "fetchError": "Učitavanje podataka nije uspjelo.",
+    "saveError": "Ažuriranje profila nije uspjelo.",
+    "contactPerson": "Kontakt osoba"
   }
 }

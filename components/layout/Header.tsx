@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Building, User } from 'lucide-react';
 import logo from "@/public/images/Varivo_LOGO_RGB_boja.png"; 
 import { Link, usePathname, useRouter } from '@/src/i18n/navigation';
 import { useLocale, useTranslations } from 'next-intl';
@@ -96,6 +96,16 @@ export default function Header() {
             <Menu size={30} strokeWidth={1.7} />
           </button>
 
+          {/* Desktop Business Account Badge (Left Side) */}
+          {session?.user?.role === "business_owner" && (
+            <div className="hidden 2xl:block absolute left-6 top-1/2 -translate-y-1/2">
+              <Link href="/profile" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold tracking-wider uppercase bg-orange-100 text-[#E86F24] border border-orange-200 shadow-2xs hover:bg-orange-200/50 transition-all">
+                <Building size={12} strokeWidth={2.5} />
+                <span>{t("businessAccount")}</span>
+              </Link>
+            </div>
+          )}
+
           {/* Logo - Using Next.js Image */}
           <Link 
             href="/" 
@@ -111,6 +121,11 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden 2xl:flex items-center gap-10 text-[15px] font-serif font-medium text-gray-900 pr-2">
+            {session && session.user.role !== "business_owner" && (
+              <Link href="/profile" className="flex items-center justify-center w-9 h-9 rounded-full bg-orange-100 text-[#E86F24] border border-orange-200 hover:bg-orange-200/50 transition-all font-serif font-bold text-sm shadow-2xs" title={session.user.email}>
+                {session.user.first_name ? session.user.first_name[0].toUpperCase() : <User size={15} />}
+              </Link>
+            )}
             {navItems.map((item) => (
               item.onClick ? (
                 <button
@@ -158,11 +173,11 @@ export default function Header() {
                 className="flex items-center gap-3 text-left"
               >
                 <Image
-              src={logo}
-              alt="Varivo Logo"
-              className="h-40 lg:h-44 w-auto object-contain"
-              priority // High priority loading for header
-            />
+                  src={logo}
+                  alt="Varivo Logo"
+                  className="h-40 lg:h-44 w-auto object-contain"
+                  priority // High priority loading for header
+                />
               </Link>
 
               <button
@@ -175,6 +190,27 @@ export default function Header() {
             </div>
 
             <nav className="flex flex-col gap-2">
+              {session?.user?.role === "business_owner" ? (
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="mx-4 mb-4 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-orange-100 text-[#E86F24] border border-orange-200 w-fit hover:bg-orange-200/50 transition-all"
+                >
+                  <Building size={13} strokeWidth={2.5} />
+                  <span>{t("businessAccount")}</span>
+                </Link>
+              ) : session ? (
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="mx-4 mb-4 flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold bg-orange-50 text-[#E86F24] border border-orange-100 w-fit hover:bg-orange-100/50 transition-all"
+                >
+                  <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center text-xs font-bold border border-orange-200">
+                    {session.user.first_name ? session.user.first_name[0].toUpperCase() : <User size={12} />}
+                  </div>
+                  <span>{session.user.first_name || session.user.email.split('@')[0]}</span>
+                </Link>
+              ) : null}
               {navItems.map((item) => (
                 item.onClick ? (
                   <button

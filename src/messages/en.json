@@ -8,7 +8,9 @@
     "logout": "Logout",
     "signup": "Signup",
     "openMenu": "Open mobile menu",
-    "language": "Language"
+    "language": "Language",
+    "businessAccount": "Business Account",
+    "profile": "Profile"
   },
   "Common": {
     "home": "Home",
@@ -133,7 +135,39 @@
     "panelTitle1": "Fresh, traditional dishes",
     "panelTitle2": "prepared",
     "panelTitle3": "daily",
-    "panelText": "Experience the authentic taste of Varivo bistro, where every meal is a celebration of tradition."
+    "panelText": "Experience the authentic taste of Varivo bistro, where every meal is a celebration of tradition.",
+    "roleUser": "Regular User",
+    "roleBusiness": "Business Owner",
+    "businessLocation": "Business Location",
+    "country": "Country",
+    "city": "City",
+    "streetAddress": "Street Address",
+    "postalCode": "Postal Code",
+    "contactPerson": "Contact Person / Manager",
+    "contactName": "Contact Person Name",
+    "contactEmail": "Contact Person Email",
+    "contactPhone": "Contact Person Phone",
+    "businessInfo": "Business Information",
+    "companyName": "Business / Company Name",
+    "oib": "OIB / Tax ID",
+    "website": "Website",
+    "businessDescription": "Business Description",
+    "businessAccountBadge": "Business Account",
+    "oibPlaceholder": "Enter OIB / Tax ID",
+    "websitePlaceholder": "e.g., https://example.com",
+    "descriptionPlaceholder": "Describe your business...",
+    "countryPlaceholder": "Enter Country",
+    "cityPlaceholder": "Enter City",
+    "streetPlaceholder": "Enter Street Address",
+    "postalPlaceholder": "Enter Postal Code",
+    "contactNamePlaceholder": "Enter Manager/Contact Name",
+    "contactEmailPlaceholder": "Enter Contact Email",
+    "contactPhonePlaceholder": "Enter Contact Phone",
+    "companyPlaceholder": "Enter Business/Company Name",
+    "requiredField": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "invalidPhone": "Invalid phone number",
+    "invalidWebsite": "Invalid website URL"
   },
   "Cart": {
     "emptyTitle": "Your cart is empty",
@@ -236,5 +270,16 @@
     "difference": "Difference?",
     "ctaText": "Join thousands of satisfied food lovers who enjoy Varivo every day.",
     "explore": "Explore our Menu"
+  },
+  "Profile": {
+    "title": "Profile Settings",
+    "subtitle": "Manage your account and business information",
+    "personalInfo": "Personal Details",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "saveSuccess": "Profile updated successfully!",
+    "fetchError": "Failed to load profile details.",
+    "saveError": "Failed to update profile.",
+    "contactPerson": "Contact Person"
   }
 }

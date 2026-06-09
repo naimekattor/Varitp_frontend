@@ -134,16 +134,79 @@ export default function AuthPage({
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+
+    // Basic password matching validation
+    if (signUpForm.password !== signUpForm.confirmPassword) {
+      setError(t("passwordMismatch"));
+      setIsLoading(false);
+      return;
+    }
+
+    const isBusiness = signUpForm.role === "business_owner";
+
+    // Frontend validations
+    if (isBusiness) {
+      const requiredFields = [
+        signUpForm.email,
+        signUpForm.firstName,
+        signUpForm.lastName,
+        signUpForm.phone,
+        signUpForm.password,
+        signUpForm.confirmPassword,
+        signUpForm.companyName,
+        signUpForm.oib,
+        signUpForm.website,
+        signUpForm.businessDescription,
+        signUpForm.country,
+        signUpForm.city,
+        signUpForm.streetAddress,
+        signUpForm.postalCode,
+        signUpForm.contactName,
+        signUpForm.contactEmail,
+        signUpForm.contactPhone,
+      ];
+      if (requiredFields.some((f) => !f || f.trim() === "")) {
+        setError(t("requiredFields"));
+        setIsLoading(false);
+        return;
+      }
+    } else {
+      const requiredFields = [
+        signUpForm.email,
+        signUpForm.firstName,
+        signUpForm.lastName,
+        signUpForm.address,
+        signUpForm.phone,
+        signUpForm.password,
+        signUpForm.confirmPassword,
+      ];
+      if (requiredFields.some((f) => !f || f.trim() === "")) {
+        setError(t("requiredFields"));
+        setIsLoading(false);
+        return;
+      }
+    }
+
     try {
-      const response = await api.post("/auth/api/v1/signup/", {
+      // For business owner, format the address nicely since the backend takes the regular payload address
+      const address = isBusiness
+        ? `${signUpForm.streetAddress}, ${signUpForm.postalCode} ${signUpForm.city}, ${signUpForm.country}`
+        : signUpForm.address;
+
+      const payload = {
         email: signUpForm.email,
         first_name: signUpForm.firstName,
         last_name: signUpForm.lastName,
-        address: signUpForm.address,
+        address: address,
         phone: signUpForm.phone,
         password: signUpForm.password,
         confirm_password: signUpForm.confirmPassword,
-      });
+        role: signUpForm.role || "user",
+      };
+
+      console.log("Submitting registration payload:", JSON.stringify(payload, null, 2));
+
+      const response = await api.post("/auth/api/v1/signup/", payload);
 
       if (response.data.status) {
         // Trigger OTP

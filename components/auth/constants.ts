@@ -9,6 +9,7 @@ export const createEmptySignInForm = () => ({
 });
 
 export const createEmptySignUpForm = () => ({
+  role: "user", // "user" or "business_owner"
   firstName: "",
   lastName: "",
   email: "",
@@ -16,6 +17,17 @@ export const createEmptySignUpForm = () => ({
   phone: "",
   password: "",
   confirmPassword: "",
+  companyName: "",
+  oib: "",
+  website: "",
+  businessDescription: "",
+  country: "",
+  city: "",
+  streetAddress: "",
+  postalCode: "",
+  contactName: "",
+  contactEmail: "",
+  contactPhone: "",
 });
 
 export const createEmptyResetPasswordForm = () => ({
