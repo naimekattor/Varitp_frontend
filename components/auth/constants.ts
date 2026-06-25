@@ -17,17 +17,6 @@ export const createEmptySignUpForm = () => ({
   phone: "",
   password: "",
   confirmPassword: "",
-  companyName: "",
-  oib: "",
-  website: "",
-  businessDescription: "",
-  country: "",
-  city: "",
-  streetAddress: "",
-  postalCode: "",
-  contactName: "",
-  contactEmail: "",
-  contactPhone: "",
 });
 
 export const createEmptyResetPasswordForm = () => ({

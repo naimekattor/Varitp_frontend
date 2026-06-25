@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image';
-import { ShoppingCart as CartIcon, Trash2, ArrowLeft } from 'lucide-react';
+import { ShoppingCart as CartIcon, Trash2, ArrowLeft, AlertCircle } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { Link, useRouter } from '@/src/i18n/navigation';
 import { useEffect, useState } from 'react';
@@ -212,6 +212,13 @@ export default function ShoppingCartPage() {
                 >
                   {t("Common.remove")}
                 </button>
+              </div>
+            )}
+
+            {error && (
+              <div className="mb-8 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center gap-3 text-red-600 text-sm animate-in fade-in duration-300">
+                <AlertCircle size={18} />
+                <span>{error}</span>
               </div>
             )}
 

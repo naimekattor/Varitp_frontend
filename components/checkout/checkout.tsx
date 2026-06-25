@@ -81,9 +81,9 @@ export default function CheckoutPage() {
     setError(null);
     try {
       await applyCoupon(couponInput);
-      
-    } catch (err) {
+    } catch (err: any) {
       console.error("Coupon error:", err);
+      setError(err.response?.data?.error || err.response?.data?.message || err.message || "Failed to apply coupon");
     } finally {
       setIsApplyingCoupon(false);
     }
@@ -95,8 +95,9 @@ export default function CheckoutPage() {
     try {
       await removeCoupon();
       setCouponInput('');
-    } catch (err) {
+    } catch (err: any) {
       console.error("Remove coupon error:", err);
+      setError(err.response?.data?.error || err.response?.data?.message || err.message || "Failed to remove coupon");
     } finally {
       setIsApplyingCoupon(false);
     }
@@ -193,7 +194,7 @@ export default function CheckoutPage() {
       }
     } catch (err: any) {
       console.error("Order error:", err);
-      setError(err.response?.data?.message || t("Checkout.orderError"));
+      setError(err.response?.data?.error || err.response?.data?.message || t("Checkout.orderError"));
     } finally {
       setIsProcessing(false);
     }

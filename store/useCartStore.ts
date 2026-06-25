@@ -112,7 +112,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       }
     } catch (err: any) {
       console.error("Fetch cart error:", err);
-      set({ error: err.response?.data?.message || "Failed to fetch cart" });
+      set({ error: err.response?.data?.error || err.response?.data?.message || "Failed to fetch cart" });
     } finally {
       set({ isLoading: false });
     }
@@ -132,7 +132,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       }
     } catch (err: any) {
       console.error("Add to cart error:", err);
-      set({ error: err.response?.data?.message || "Failed to add item" });
+      set({ error: err.response?.data?.error || err.response?.data?.message || "Failed to add item" });
     } finally {
       set({ isLoading: false });
     }
@@ -142,9 +142,14 @@ export const useCartStore = create<CartState>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       await get().fetchCart(couponCode);
+      if (get().error) {
+        throw new Error(get().error || "Failed to apply coupon");
+      }
     } catch (err: any) {
       console.error("Apply coupon error:", err);
-      set({ error: err.response?.data?.message || "Failed to apply coupon" });
+      const errMsg = err.response?.data?.error || err.response?.data?.message || err.message || "Failed to apply coupon";
+      set({ error: errMsg });
+      throw err;
     } finally {
       set({ isLoading: false });
     }
@@ -176,7 +181,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     } catch (err: any) {
       console.error("Remove item error:", err);
       console.error("Response data:", err.response?.data);
-      set({ error: err.response?.data?.message || "Failed to remove item" });
+      set({ error: err.response?.data?.error || err.response?.data?.message || "Failed to remove item" });
     } finally {
       set({ isLoading: false });
     }
@@ -197,7 +202,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       await get().fetchCart();
     } catch (err: any) {
       console.error("Update quantity error:", err);
-      set({ error: err.response?.data?.message || "Failed to update quantity" });
+      set({ error: err.response?.data?.error || err.response?.data?.message || "Failed to update quantity" });
     } finally {
       set({ isLoading: false });
     }

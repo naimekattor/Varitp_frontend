@@ -11,7 +11,7 @@ import {
   createEmptySignUpForm,
   createEmptyResetPasswordForm,
 } from "./constants";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import api from "@/lib/api";
 import AuthLayout from "./AuthLayout";
 import AuthImagePanel from "./AuthImagePanel";
@@ -21,8 +21,38 @@ import ForgotPasswordForm from "./ForgotPasswordForm";
 import OtpVerificationForm from "./OtpVerificationForm";
 import ResetPasswordForm from "./ResetPasswordForm";
 import SuccessModal from "./SuccessModal";
-import { Link } from "@/src/i18n/navigation";
+import { Link, useRouter } from "@/src/i18n/navigation";
 import { useTranslations } from "next-intl";
+
+const parseBackendErrors = (data: any, fallback: string): string => {
+  if (!data || typeof data !== "object") return fallback;
+
+  // Handle case where we have a simple message, detail or error string
+  if (typeof data.message === "string") return data.message;
+  if (typeof data.detail === "string") return data.detail;
+  if (typeof data.error === "string") return data.error;
+
+  const errorMessages: string[] = [];
+  for (const [key, val] of Object.entries(data)) {
+    if (key === "status" || key === "success") continue;
+
+    const messages = Array.isArray(val) ? val : [val];
+    const cleanMessages = messages.filter((m) => typeof m === "string");
+    if (cleanMessages.length === 0) continue;
+
+    if (key === "detail" || key === "non_field_errors" || key === "message" || key === "error") {
+      errorMessages.push(cleanMessages.join(", "));
+    } else {
+      const formattedKey = key
+        .split("_")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+      errorMessages.push(`${formattedKey}: ${cleanMessages.join(", ")}`);
+    }
+  }
+
+  return errorMessages.length > 0 ? errorMessages.join("\n") : fallback;
+};
 
 export default function AuthPage({
   onBack,
@@ -32,6 +62,7 @@ export default function AuthPage({
   initialView?: AuthViewState;
 }) {
   const t = useTranslations("Auth");
+  const router = useRouter();
   const [viewState, setViewState] = useState<AuthViewState>(initialView);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -118,7 +149,12 @@ export default function AuthPage({
         }
       } else if (result?.ok) {
         console.log("Sign in successful");
-        onBack(); // Redirect home or to dashboard
+        const session = await getSession();
+        if (session?.user?.role === "business_owner") {
+          router.push("/profile");
+        } else {
+          onBack();
+        }
       } else {
         setError(t("signInFailed"));
       }
@@ -142,62 +178,28 @@ export default function AuthPage({
       return;
     }
 
-    const isBusiness = signUpForm.role === "business_owner";
-
-    // Frontend validations
-    if (isBusiness) {
-      const requiredFields = [
-        signUpForm.email,
-        signUpForm.firstName,
-        signUpForm.lastName,
-        signUpForm.phone,
-        signUpForm.password,
-        signUpForm.confirmPassword,
-        signUpForm.companyName,
-        signUpForm.oib,
-        signUpForm.website,
-        signUpForm.businessDescription,
-        signUpForm.country,
-        signUpForm.city,
-        signUpForm.streetAddress,
-        signUpForm.postalCode,
-        signUpForm.contactName,
-        signUpForm.contactEmail,
-        signUpForm.contactPhone,
-      ];
-      if (requiredFields.some((f) => !f || f.trim() === "")) {
-        setError(t("requiredFields"));
-        setIsLoading(false);
-        return;
-      }
-    } else {
-      const requiredFields = [
-        signUpForm.email,
-        signUpForm.firstName,
-        signUpForm.lastName,
-        signUpForm.address,
-        signUpForm.phone,
-        signUpForm.password,
-        signUpForm.confirmPassword,
-      ];
-      if (requiredFields.some((f) => !f || f.trim() === "")) {
-        setError(t("requiredFields"));
-        setIsLoading(false);
-        return;
-      }
+    // Frontend validations for standard fields
+    const requiredFields = [
+      signUpForm.email,
+      signUpForm.firstName,
+      signUpForm.lastName,
+      signUpForm.address,
+      signUpForm.phone,
+      signUpForm.password,
+      signUpForm.confirmPassword,
+    ];
+    if (requiredFields.some((f) => !f || f.trim() === "")) {
+      setError(t("requiredFields"));
+      setIsLoading(false);
+      return;
     }
 
     try {
-      // For business owner, format the address nicely since the backend takes the regular payload address
-      const address = isBusiness
-        ? `${signUpForm.streetAddress}, ${signUpForm.postalCode} ${signUpForm.city}, ${signUpForm.country}`
-        : signUpForm.address;
-
       const payload = {
         email: signUpForm.email,
         first_name: signUpForm.firstName,
         last_name: signUpForm.lastName,
-        address: address,
+        address: signUpForm.address,
         phone: signUpForm.phone,
         password: signUpForm.password,
         confirm_password: signUpForm.confirmPassword,
@@ -217,7 +219,7 @@ export default function AuthPage({
         setViewState("otp");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || t("registrationFailed"));
+      setError(parseBackendErrors(err.response?.data, t("registrationFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -237,7 +239,7 @@ export default function AuthPage({
         setViewState("otp");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || t("resetCodeFailed"));
+      setError(parseBackendErrors(err.response?.data, t("resetCodeFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -276,7 +278,7 @@ export default function AuthPage({
           setResetToken(response.data.access || response.data.token);
         }
 
-        if (viewState === "otp" && (forgotPasswordEmail || signInForm.email)) {
+        if (viewState === "otp") {
           // If we were in forgot password flow (detected by having an email in that state or coming from signin's forgot link)
           // Actually, let's just check the viewState transition logic.
           // If we are at 'otp' and we came from 'forgot-password', we should go to 'reset-password'.
@@ -290,7 +292,7 @@ export default function AuthPage({
         }
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || t("otpFailed"));
+      setError(parseBackendErrors(err.response?.data, t("otpFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -303,11 +305,11 @@ export default function AuthPage({
       const email = forgotPasswordEmail || (viewState === "otp" ? signUpForm.email : signInForm.email);
       await api.post("/auth/api/v1/get-otp/", {
         email,
-        task: viewState === "otp" ? "registration" : "password_reset",
+        task: forgotPasswordEmail ? "password_reset" : "registration",
       });
       setError(t("newCodeSent"));
     } catch (err: any) {
-      setError(err.response?.data?.message || t("resendFailed"));
+      setError(parseBackendErrors(err.response?.data, t("resendFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -334,7 +336,7 @@ export default function AuthPage({
         setShowSuccess(true);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || t("passwordResetFailed"));
+      setError(parseBackendErrors(err.response?.data, t("passwordResetFailed")));
     } finally {
       setIsLoading(false);
     }
@@ -357,6 +359,9 @@ export default function AuthPage({
     setViewState(view);
     setShowPassword(false);
     setShowConfirmPassword(false);
+    if (view !== "otp" && view !== "forgot-password" && view !== "reset-password") {
+      setForgotPasswordEmail("");
+    }
   };
 
   return (
@@ -415,7 +420,7 @@ export default function AuthPage({
 
           {/* Error Message */}
           {error && (
-            <div className="w-full mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-xs font-medium animate-in fade-in slide-in-from-top-1 duration-300">
+            <div className="w-full mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-xs font-medium animate-in fade-in slide-in-from-top-1 duration-300 whitespace-pre-line">
               {error}
             </div>
           )}
