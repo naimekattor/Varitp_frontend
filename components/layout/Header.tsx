@@ -120,7 +120,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden 2xl:flex items-center gap-10 text-[15px] font-serif font-medium text-gray-900 pr-2">
+          <nav className="hidden 2xl:flex items-center gap-6 text-[15px] font-serif font-medium text-gray-900 pr-2">
             {session && session.user.role !== "business_owner" && (
               <Link href="/profile" className="flex items-center justify-center w-9 h-9 rounded-full bg-orange-100 text-[#E86F24] border border-orange-200 hover:bg-orange-200/50 transition-all font-serif font-bold text-sm shadow-2xs" title={session.user.email}>
                 {session.user.first_name ? session.user.first_name[0].toUpperCase() : <User size={15} />}
